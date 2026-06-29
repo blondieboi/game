@@ -39,6 +39,7 @@
 
           <div class="character-wrap">
             <div class="nameplate" id="character-name">Hjälte</div>
+            <canvas class="avatar-preview-canvas" id="avatar-preview-canvas" aria-hidden="true"></canvas>
             <div
               class="character shirt-blue pants-green badge-orange hair-wavy hair-brown skin-medium eyes-black face-smile"
               id="character"
@@ -66,12 +67,17 @@
                 <div class="arm arm-left"><div class="hand"></div></div>
                 <div class="arm arm-right"><div class="hand"></div></div>
               </div>
+              <div class="backpack"></div>
               <div class="legs">
                 <div class="leg leg-left"><div class="boot"></div></div>
                 <div class="leg leg-right"><div class="boot"></div></div>
               </div>
             </div>
           </div>
+          <label class="preview-rotation" for="preview-rotation">
+            <span>Rotera</span>
+            <input id="preview-rotation" type="range" min="0" max="360" value="0" />
+          </label>
         </div>
       </section>
 

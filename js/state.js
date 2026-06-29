@@ -68,8 +68,9 @@ var choices = {
   ],
   face: [
     { label: "Glad", className: "face-smile" },
-    { label: "Målfirande", className: "face-goal" },
-    { label: "APOC-mask", className: "face-apoc" },
+    { label: "Lugn", className: "face-calm" },
+    { label: "Bestämd", className: "face-focus" },
+    { label: "Mask", className: "face-apoc" },
   ],
   shirtColor: [
     { label: "Röd", className: "shirt-red", color: "#e53935" },
@@ -100,10 +101,18 @@ var choices = {
   ],
   background: [
     { label: "Soligt", className: "background-sunny" },
-    { label: "Regnigt", className: "background-rainy" },
     { label: "Natt", className: "background-night" },
-    { label: "Åska", className: "background-thunder" },
   ],
+};
+
+var legacyChoiceMap = {
+  face: {
+    "face-goal": "face-focus",
+  },
+  background: {
+    "background-rainy": "background-sunny",
+    "background-thunder": "background-night",
+  },
 };
 
 var DEFAULT_CHARACTER_STATE = {
@@ -130,20 +139,10 @@ var backgroundLookup = {
     ground: 0x4f9f66,
     fog: 0xbde9ff,
   },
-  "background-rainy": {
-    sky: 0x8599ad,
-    ground: 0x3f7f5b,
-    fog: 0xb9c6d1,
-  },
   "background-night": {
     sky: 0x17243b,
     ground: 0x274c48,
     fog: 0x202b44,
-  },
-  "background-thunder": {
-    sky: 0x222c3f,
-    ground: 0x2f6750,
-    fog: 0x4c5968,
   },
 };
 

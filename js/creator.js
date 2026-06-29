@@ -17,10 +17,17 @@ const startGameButton = document.querySelector("#start-game");
 const newCharacterBtn = document.querySelector("#new-character-btn");
 const prevStepButton = document.querySelector("#prev-step");
 const nextStepButton = document.querySelector("#next-step");
+const previewRotation = document.querySelector("#preview-rotation");
+const avatarPreviewCanvas = document.querySelector("#avatar-preview-canvas");
 const stepDots = document.querySelectorAll("#step-dots .step-dot");
 const stepLabel = document.querySelector("#step-label");
 const stepPanels = document.querySelectorAll(".step-panel");
 let currentStep = 0;
+let avatarPreviewRenderer = null;
+let avatarPreviewScene = null;
+let avatarPreviewCamera = null;
+let avatarPreviewRoot = null;
+let avatarPreviewAngle = 0;
 
 function showTitle() {
   titleScreen.hidden = false;
@@ -34,6 +41,8 @@ function showCreator() {
   gameScreen.hidden = true;
   creatorScreen.hidden = false;
   stopGame();
+  initAvatarPreview();
+  rebuildAvatarPreview();
 }
 
 function goToStep(step) {
@@ -52,13 +61,100 @@ function updatePressedStates(type) {
   });
 }
 
+function normalizeChoice(type, className) {
+  const mapped = legacyChoiceMap[type] && legacyChoiceMap[type][className];
+  const nextClassName = mapped || className;
+  if (!choices[type] || choices[type].some((choice) => choice.className === nextClassName)) {
+    return nextClassName;
+  }
+  return DEFAULT_CHARACTER_STATE[type];
+}
+
 function setChoice(type, className) {
+  const nextClassName = normalizeChoice(type, className);
   const target = type === "background" ? worldPreview : character;
   choices[type].forEach((choice) => target.classList.remove(choice.className));
-  target.classList.add(className);
-  characterState[type] = className;
+  Object.keys(legacyChoiceMap[type] || {}).forEach((legacyClassName) => target.classList.remove(legacyClassName));
+  target.classList.add(nextClassName);
+  characterState[type] = nextClassName;
   updatePressedStates(type);
+  rebuildAvatarPreview();
   saveGame();
+}
+
+function initAvatarPreview() {
+  if (avatarPreviewRenderer || !avatarPreviewCanvas || !window.THREE || typeof createAvatar !== "function") return;
+  avatarPreviewScene = new THREE.Scene();
+  avatarPreviewCamera = new THREE.PerspectiveCamera(28, 1, 0.1, 20);
+  avatarPreviewCamera.position.set(0, 1.28, 5);
+  avatarPreviewCamera.lookAt(0, 1.05, 0);
+
+  const keyLight = new THREE.DirectionalLight(0xffffff, 1.25);
+  keyLight.position.set(2.5, 4.5, 4);
+  avatarPreviewScene.add(keyLight);
+  avatarPreviewScene.add(new THREE.AmbientLight(0xffffff, 0.55));
+
+  avatarPreviewRenderer = new THREE.WebGLRenderer({
+    canvas: avatarPreviewCanvas,
+    alpha: true,
+    antialias: true,
+  });
+  avatarPreviewCanvas.style.width = "min(14rem, 78vw)";
+  avatarPreviewCanvas.style.height = "20rem";
+  character.style.opacity = "0";
+  character.style.pointerEvents = "none";
+  avatarPreviewRenderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+  avatarPreviewRenderer.outputEncoding = THREE.sRGBEncoding;
+  worldPreview.classList.add("has-3d-preview");
+  window.addEventListener("resize", renderAvatarPreview);
+}
+
+function rebuildAvatarPreview() {
+  if (!avatarPreviewRenderer) return;
+  if (avatarPreviewRoot) {
+    avatarPreviewScene.remove(avatarPreviewRoot);
+  }
+  avatarPreviewRoot = createAvatar();
+  avatarPreviewRoot.rotation.y = avatarPreviewAngle;
+  avatarPreviewRoot.position.y = -0.04;
+  avatarPreviewScene.add(avatarPreviewRoot);
+  renderAvatarPreview();
+}
+
+function renderAvatarPreview() {
+  if (!avatarPreviewRenderer || !avatarPreviewCanvas || !avatarPreviewRoot) return;
+  const rect = avatarPreviewCanvas.getBoundingClientRect();
+  const width = Math.max(1, Math.round(rect.width));
+  const height = Math.max(1, Math.round(rect.height));
+  avatarPreviewCamera.aspect = width / height;
+  avatarPreviewCamera.updateProjectionMatrix();
+  avatarPreviewRenderer.setSize(width, height, false);
+  avatarPreviewRenderer.render(avatarPreviewScene, avatarPreviewCamera);
+}
+
+function setPreviewRotation(value) {
+  avatarPreviewAngle = Number(value) * Math.PI / 180;
+  character.style.setProperty("--preview-rotation", `${value}deg`);
+  if (previewRotation) {
+    previewRotation.style.setProperty("--rotation-progress", `${Number(value) / 3.6}%`);
+  }
+  if (avatarPreviewRoot) {
+    avatarPreviewRoot.rotation.y = avatarPreviewAngle;
+    renderAvatarPreview();
+  }
+}
+
+function safeSetLearningProgress(progress) {
+  if (typeof setLearningProgress === "function") {
+    setLearningProgress(progress);
+    return;
+  }
+  const source = progress || DEFAULT_LEARNING_PROGRESS;
+  ["math", "reading", "logic"].forEach((topic) => {
+    learningProgress[topic].level = Math.max(1, Math.min(4, Number(source[topic] && source[topic].level) || 1));
+    learningProgress[topic].recent =
+      Array.isArray(source[topic] && source[topic].recent) ? source[topic].recent.slice(-5).map(Boolean) : [];
+  });
 }
 
 function randomChoice(items) {
@@ -93,6 +189,7 @@ function resetToDefaults() {
     if (!choices[type]) return;
     const target = type === "background" ? worldPreview : character;
     choices[type].forEach((c) => target.classList.remove(c.className));
+    Object.keys(legacyChoiceMap[type] || {}).forEach((legacyClassName) => target.classList.remove(legacyClassName));
     target.classList.add(className);
     characterState[type] = className;
   });
@@ -102,6 +199,7 @@ function resetToDefaults() {
   Object.keys(defaults).forEach((type) => {
     if (choices[type]) updatePressedStates(type);
   });
+  rebuildAvatarPreview();
 }
 
 function syncName() {
@@ -207,10 +305,12 @@ function loadCharacter(name, charData) {
   const s = charData.state;
   Object.entries(s).forEach(([type, className]) => {
     if (!choices[type]) return;
+    const nextClassName = normalizeChoice(type, className);
     const target = type === "background" ? worldPreview : character;
     choices[type].forEach((c) => target.classList.remove(c.className));
-    target.classList.add(className);
-    characterState[type] = className;
+    Object.keys(legacyChoiceMap[type] || {}).forEach((legacyClassName) => target.classList.remove(legacyClassName));
+    target.classList.add(nextClassName);
+    characterState[type] = nextClassName;
   });
   nameInput.value = name;
   syncName();
@@ -222,13 +322,14 @@ function loadCharacter(name, charData) {
   ownedPixelPets.clear();
   (charData.ownedPixelPets || []).forEach((id) => ownedPixelPets.add(id));
   activePixelPet = ownedPixelPets.has(charData.activePixelPet) ? charData.activePixelPet : (ownedPixelPets.size > 0 ? [...ownedPixelPets][0] : null);
-  setLearningProgress(charData.learningProgress);
+  safeSetLearningProgress(charData.learningProgress);
   Object.keys(s).forEach((type) => {
     if (choices[type]) updatePressedStates(type);
   });
   const data = getSaveData();
   data.lastPlayed = name;
   writeSaveData(data);
+  rebuildAvatarPreview();
 }
 
 function makeOptionButton(type, choice) {
@@ -270,6 +371,10 @@ choices.background.forEach((choice) =>
 
 nameInput.addEventListener("input", syncName);
 randomizeButton.addEventListener("click", randomizeCharacter);
+if (previewRotation) {
+  setPreviewRotation(previewRotation.value);
+  previewRotation.addEventListener("input", () => setPreviewRotation(previewRotation.value));
+}
 
 startGameButton.addEventListener("click", () => {
   const name = nameInput.value.trim();
@@ -298,7 +403,7 @@ startGameButton.addEventListener("click", () => {
 
 newCharacterBtn.addEventListener("click", () => {
   resetToDefaults();
-  setLearningProgress(DEFAULT_LEARNING_PROGRESS);
+  safeSetLearningProgress(DEFAULT_LEARNING_PROGRESS);
   resources.emeralds = 0;
   resources.diamonds = 0;
   resources.rubies = 0;

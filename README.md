@@ -14,10 +14,10 @@ Current options:
 - Hair color
 - Skin color
 - Eye color
-- Face expression, Gyokeres-style goal celebration, or mask
+- Simple face expression or mask
 - Outfit style
 - Outfit badge color
-- Background mood
+- Sunny or night background
 - Random character button
 - Start button into a small 3D world
 - WASD movement
