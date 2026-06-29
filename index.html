@@ -1,0 +1,258 @@
+<!doctype html>
+<html lang="sv">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Karaktärsverkstan — Skapa din upptäckare!</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400..700&family=Nunito:wght@400..800&family=VT323&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <section class="title-screen" id="title-screen">
+      <div class="title-content">
+        <p class="eyebrow">Karaktärsverkstan</p>
+        <h1>Välj din upptäckare</h1>
+        <p class="title-sub">Välj en sparad karaktär eller skapa en ny</p>
+
+        <div class="character-list" id="character-list"></div>
+
+        <button class="new-character-btn" id="new-character-btn" type="button">
+          + Skapa ny karaktär
+        </button>
+      </div>
+    </section>
+
+    <main class="app-shell" id="creator-screen" hidden>
+      <section class="preview-panel" aria-labelledby="character-name">
+        <div class="world-preview background-sunny" id="world-preview">
+          <div class="sun" aria-hidden="true"></div>
+          <div class="moon" aria-hidden="true"></div>
+          <div class="lightning" aria-hidden="true"></div>
+          <div class="cloud cloud-one" aria-hidden="true"></div>
+          <div class="cloud cloud-two" aria-hidden="true"></div>
+          <div class="rain" aria-hidden="true"></div>
+          <div class="hills hill-back" aria-hidden="true"></div>
+          <div class="hills hill-front" aria-hidden="true"></div>
+          <div class="ground" aria-hidden="true"></div>
+
+          <div class="character-wrap">
+            <div class="nameplate" id="character-name">Hjälte</div>
+            <div
+              class="character shirt-blue pants-green badge-orange hair-wavy hair-brown skin-medium eyes-black face-smile"
+              id="character"
+            >
+              <div class="head">
+                <div class="hair hair-back"></div>
+                <div class="ear ear-left"></div>
+                <div class="ear ear-right"></div>
+                <div class="face">
+                  <div class="hair hair-front"></div>
+                  <div class="brow brow-left"></div>
+                  <div class="brow brow-right"></div>
+                  <div class="eye eye-left"></div>
+                  <div class="eye eye-right"></div>
+                  <div class="nose"></div>
+                  <div class="mouth"></div>
+                </div>
+              </div>
+              <div class="neck"></div>
+              <div class="body">
+                <div class="torso">
+                  <div class="collar"></div>
+                  <div class="outfit-mark"></div>
+                </div>
+                <div class="arm arm-left"><div class="hand"></div></div>
+                <div class="arm arm-right"><div class="hand"></div></div>
+              </div>
+              <div class="legs">
+                <div class="leg leg-left"><div class="boot"></div></div>
+                <div class="leg leg-right"><div class="boot"></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="control-panel" aria-label="Anpassa karaktär">
+        <div class="brand-row">
+          <div>
+            <p class="eyebrow">Karaktärsverkstan</p>
+            <h1>Skapa din upptäckare</h1>
+          </div>
+          <button class="random-button" id="randomize" type="button">Slumpa</button>
+        </div>
+
+        <div class="step-dots" id="step-dots">
+          <span class="step-dot active" data-step="0"></span>
+          <span class="step-dot" data-step="1"></span>
+          <span class="step-dot" data-step="2"></span>
+          <span class="step-dot" data-step="3"></span>
+        </div>
+
+        <p class="step-label" id="step-label">Steg 1 av 4 — Namn &amp; hår</p>
+
+        <div class="step-panel" data-step="0">
+          <label class="field-label" for="name-input">Namn</label>
+          <input id="name-input" maxlength="16" autocomplete="off" />
+          <span class="field-error" id="name-validation"></span>
+
+          <fieldset>
+            <legend>Hårtyp</legend>
+            <div class="option-grid" id="hair-options"></div>
+          </fieldset>
+
+          <fieldset>
+            <legend>Hårfärg</legend>
+            <div class="swatch-row" id="hair-color-options"></div>
+          </fieldset>
+        </div>
+
+        <div class="step-panel" data-step="1" hidden>
+          <fieldset>
+            <legend>Hudfärg</legend>
+            <div class="swatch-row" id="skin-options"></div>
+          </fieldset>
+
+          <fieldset>
+            <legend>Ögonfärg</legend>
+            <div class="swatch-row" id="eye-color-options"></div>
+          </fieldset>
+
+          <fieldset>
+            <legend>Ansikte</legend>
+            <div class="option-grid" id="face-options"></div>
+          </fieldset>
+        </div>
+
+        <div class="step-panel" data-step="2" hidden>
+          <fieldset>
+            <legend>Tröjfärg</legend>
+            <div class="swatch-row" id="shirt-color-options"></div>
+          </fieldset>
+
+          <fieldset>
+            <legend>Byxfärg</legend>
+            <div class="swatch-row" id="pants-color-options"></div>
+          </fieldset>
+
+          <fieldset>
+            <legend>Dräktmärke</legend>
+            <div class="swatch-row" id="badge-color-options"></div>
+          </fieldset>
+        </div>
+
+        <div class="step-panel" data-step="3" hidden>
+          <fieldset>
+            <legend>Bakgrund</legend>
+            <div class="option-grid" id="background-options"></div>
+          </fieldset>
+        </div>
+
+        <div class="step-nav">
+          <button class="nav-button" id="prev-step" type="button" hidden>Tillbaka</button>
+          <button class="nav-button nav-next" id="next-step" type="button">Nästa</button>
+          <button class="start-button" id="start-game" type="button" hidden>Starta</button>
+        </div>
+      </section>
+      </section>
+    </main>
+
+    <section class="game-screen" id="game-screen" aria-label="Game world" hidden>
+      <canvas id="game-canvas" tabindex="0"></canvas>
+      <div class="game-topbar">
+        <div class="resource-counters" aria-label="Insamlade resurser">
+          <div class="resource-counter emerald-counter" id="emerald-counter">
+            <span class="gem-icon emerald-icon" aria-hidden="true"></span>
+            <span class="counter-value">0</span>
+            <span class="counter-label">smaragder</span>
+          </div>
+          <div class="resource-counter diamond-counter" id="diamond-counter">
+            <span class="gem-icon diamond-icon" aria-hidden="true"></span>
+            <span class="counter-value">0</span>
+            <span class="counter-label">diamanter</span>
+          </div>
+          <div class="resource-counter ruby-counter" id="ruby-counter">
+            <span class="gem-icon ruby-icon" aria-hidden="true"></span>
+            <span class="counter-value">0</span>
+            <span class="counter-label">rubiner</span>
+          </div>
+        </div>
+      </div>
+      <div class="game-status" id="game-status" role="status"></div>
+      <div class="store-prompt" id="store-prompt" hidden>Tryck E för att handla</div>
+      <div class="store-prompt lab-prompt" id="lab-prompt" hidden>Tryck E för Pixelbänken</div>
+      <form class="math-panel" id="math-panel" hidden>
+        <button class="math-close" id="math-close" type="button" aria-label="Stäng">×</button>
+        <div class="math-reward" id="math-reward">3 smaragder</div>
+
+        <div class="math-form" id="math-form">
+          <label class="math-question" id="math-question" for="math-answer">Räkna ut:</label>
+          <div class="math-visual" id="math-visual"></div>
+          <div class="math-row">
+            <input id="math-answer" inputmode="numeric" autocomplete="off" />
+            <button class="game-button" type="submit">Svara</button>
+          </div>
+        </div>
+
+        <div class="reading-form" id="reading-form" hidden>
+          <div class="reading-passage" id="reading-passage"></div>
+          <div class="reading-question" id="reading-question"></div>
+          <div class="reading-choices" id="reading-choices"></div>
+        </div>
+
+        <div class="logic-form" id="logic-form" hidden>
+          <div class="logic-header">
+            <span class="logic-kicker">Professor Pixel</span>
+            <div class="logic-title" id="logic-title"></div>
+          </div>
+          <div class="logic-prompt" id="logic-prompt-text"></div>
+          <div class="logic-machine" id="logic-machine"></div>
+          <div class="logic-choices" id="logic-choices"></div>
+        </div>
+
+        <div class="math-feedback" id="math-feedback" role="status"></div>
+      </form>
+      <div class="panel shop-panel" id="shop-panel" hidden>
+        <button class="panel-close" id="shop-close" type="button" aria-label="Stäng">×</button>
+        <div class="panel-header">BUTIK</div>
+        <div class="shop-items" id="shop-items"></div>
+      </div>
+      <div class="panel lab-panel" id="lab-panel" hidden>
+        <button class="panel-close" id="lab-close" type="button" aria-label="Stäng">×</button>
+        <div class="panel-header">PIXELBÄNKEN</div>
+        <div class="lab-panel-intro">
+          <div>
+            <div class="lab-panel-title">Bygg smarta följeslagare</div>
+            <p>Gör logiktester hos Professor Pixel för att tjäna rubiner.</p>
+          </div>
+          <button class="game-button lab-start-btn" id="lab-start-test" type="button">Starta logiktest</button>
+        </div>
+        <div class="lab-items" id="lab-items"></div>
+      </div>
+      <div class="panel inventory-panel" id="inventory-panel" hidden>
+        <button class="panel-close" id="inventory-close" type="button" aria-label="Stäng">×</button>
+        <div class="panel-header">RYGGSÄCK</div>
+        <div class="inventory-items" id="inventory-items"></div>
+      </div>
+      <div class="pause-overlay" id="pause-overlay" hidden>
+        <div class="pause-panel">
+          <h2 class="pause-title">Paus</h2>
+          <button class="pause-btn pause-continue" id="pause-continue" type="button">Fortsätt</button>
+          <button class="pause-btn" id="pause-backpack" type="button">Ryggsäck</button>
+          <button class="pause-btn" id="pause-customize" type="button">Redigera karaktär</button>
+          <button class="pause-btn pause-quit" id="pause-quit" type="button">Till startsidan</button>
+        </div>
+      </div>
+    </section>
+
+    <script src="https://unpkg.com/three@0.128.0/build/three.min.js"></script>
+    <script src="./js/state.js"></script>
+    <script src="./js/save.js"></script>
+    <script src="./js/world.js"></script>
+    <script src="./js/game.js"></script>
+    <script src="./js/creator.js"></script>
+    <script src="./js/main.js"></script>
+  </body>
+</html>
