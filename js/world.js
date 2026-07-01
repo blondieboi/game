@@ -1754,129 +1754,190 @@ function recordChallengeResult(correct) {
   recordLearningAnswer(pendingChallenge.skill, correct);
 }
 
-function makeMathProblem(level) {
+function getAnsweredQuestions(skill) {
+  const progress = learningProgress[skill];
+  if (!progress) return [];
+  if (!Array.isArray(progress.answered)) progress.answered = [];
+  return progress.answered;
+}
+
+function markAnsweredQuestion(skill, problem) {
+  if (!problem || !problem.id) return;
+  const answered = getAnsweredQuestions(skill);
+  if (!answered.includes(problem.id)) answered.push(problem.id);
+}
+
+function pickUnansweredProblem(skill, problems) {
+  const answered = getAnsweredQuestions(skill);
+  const problemIds = problems.map((problem) => problem.id);
+  let available = problems.filter((problem) => !answered.includes(problem.id));
+
+  if (available.length === 0) {
+    learningProgress[skill].answered = answered.filter((id) => !problemIds.includes(id));
+    available = problems;
+  }
+
+  const picked = available[Math.floor(Math.random() * available.length)];
+  return {
+    ...picked,
+    options: picked.options ? picked.options.slice() : undefined,
+    items: picked.items ? picked.items.slice() : undefined,
+    accepted: picked.accepted ? picked.accepted.slice() : undefined,
+    rejected: picked.rejected ? picked.rejected.slice() : undefined,
+  };
+}
+
+function makeMathProblems(level) {
+  const problems = [];
+
   if (level === 1) {
-    const useAddition = Math.random() > 0.35;
-    if (useAddition) {
-      const left = 1 + Math.floor(Math.random() * 5);
-      const right = 1 + Math.floor(Math.random() * (10 - left));
-      return { left, right, operator: "+", answer: left + right, level };
+    for (let left = 1; left <= 5; left += 1) {
+      for (let right = 1; right < 10 - left + 1; right += 1) {
+        problems.push({ id: `math-1-add-${left}-${right}`, left, right, operator: "+", answer: left + right, level });
+      }
     }
-    const left = 3 + Math.floor(Math.random() * 8);
-    const right = Math.floor(Math.random() * left);
-    return { left, right, operator: "-", answer: left - right, level };
+    for (let left = 3; left <= 10; left += 1) {
+      for (let right = 0; right < left; right += 1) {
+        problems.push({ id: `math-1-sub-${left}-${right}`, left, right, operator: "-", answer: left - right, level });
+      }
+    }
+    return problems;
   }
 
   if (level === 2) {
-    const useAddition = Math.random() > 0.45;
-    if (useAddition) {
-      const left = 4 + Math.floor(Math.random() * 10);
-      const right = 2 + Math.floor(Math.random() * (20 - left));
-      return { left, right, operator: "+", answer: left + right, level };
+    for (let left = 4; left <= 13; left += 1) {
+      for (let right = 2; right < 20 - left + 2; right += 1) {
+        problems.push({ id: `math-2-add-${left}-${right}`, left, right, operator: "+", answer: left + right, level });
+      }
     }
-    const left = 10 + Math.floor(Math.random() * 11);
-    const right = 1 + Math.floor(Math.random() * Math.min(left, 12));
-    return { left, right, operator: "-", answer: left - right, level };
+    for (let left = 10; left <= 20; left += 1) {
+      const maxRight = Math.min(left, 12);
+      for (let right = 1; right <= maxRight; right += 1) {
+        problems.push({ id: `math-2-sub-${left}-${right}`, left, right, operator: "-", answer: left - right, level });
+      }
+    }
+    return problems;
   }
 
   if (level === 3) {
-    const target = 10 + Math.floor(Math.random() * 11);
-    const missing = 2 + Math.floor(Math.random() * (target - 3));
-    const shown = target - missing;
-    if (Math.random() > 0.5) {
-      return { left: shown, right: "?", operator: "+", answer: missing, target, level };
+    for (let target = 10; target <= 20; target += 1) {
+      for (let missing = 2; missing < target - 1; missing += 1) {
+        const shown = target - missing;
+        problems.push({ id: `math-3-right-${target}-${missing}`, left: shown, right: "?", operator: "+", answer: missing, target, level });
+        problems.push({ id: `math-3-left-${target}-${missing}`, left: "?", right: shown, operator: "+", answer: missing, target, level });
+      }
     }
-    return { left: "?", right: shown, operator: "+", answer: missing, target, level };
+    return problems;
   }
 
-  const groupSize = [2, 5, 10][Math.floor(Math.random() * 3)];
-  const groups = 2 + Math.floor(Math.random() * 4);
-  return {
-    left: groups,
-    right: groupSize,
-    operator: "×",
-    answer: groups * groupSize,
-    level,
-    prompt: "Räkna grupperna:",
-  };
+  [2, 5, 10].forEach((groupSize) => {
+    for (let groups = 2; groups <= 5; groups += 1) {
+      problems.push({
+        id: `math-4-groups-${groups}-${groupSize}`,
+        left: groups,
+        right: groupSize,
+        operator: "×",
+        answer: groups * groupSize,
+        level,
+        prompt: "Räkna grupperna:",
+      });
+    }
+  });
+  return problems;
+}
+
+function makeMathProblem(level) {
+  return pickUnansweredProblem("math", makeMathProblems(level));
 }
 
 function makeReadingProblem(level) {
   if (level === 1) {
     const simpleQuestions = [
       {
+        id: "reading-1-mira-hatt",
         passage: "Mira har en gul hatt. Hon går till parken.",
         question: "Vad har Mira?",
         options: ["En gul hatt", "En blå bil", "En röd bok"],
         answer: 0,
       },
       {
+        id: "reading-1-leo-fiskar",
         passage: "Leo ser tre fiskar i dammen. Fiskarna simmar snabbt.",
         question: "Hur många fiskar ser Leo?",
         options: ["Två", "Tre", "Fem"],
         answer: 1,
       },
       {
+        id: "reading-1-nora-vaska",
         passage: "Nora packar en macka och ett äpple i sin väska.",
         question: "Vad packar Nora?",
         options: ["En macka och ett äpple", "En boll och en sko", "En sten och en pinne"],
         answer: 0,
       },
     ];
-    return { ...simpleQuestions[Math.floor(Math.random() * simpleQuestions.length)] };
+    return pickUnansweredProblem("reading", simpleQuestions);
   }
 
   if (level === 3) {
     const sequenceQuestions = [
       {
+        id: "reading-3-sam-karta",
         passage: "Först hittade Sam en karta vid trädet. Sedan följde han stigen till sjön. Till slut såg han en blå kristall bakom en sten.",
         question: "Vad gjorde Sam efter att han hittade kartan?",
         options: ["Han följde stigen till sjön", "Han köpte en hatt", "Han gick hem direkt"],
         answer: 0,
       },
       {
+        id: "reading-3-elin-regnjacka",
         passage: "Elin hörde åskan mullra. Därför tog hon på sig regnjackan innan hon gick ut. När regnet kom var hon torr.",
         question: "Varför tog Elin på sig regnjackan?",
         options: ["För att hon hörde åskan", "För att hon skulle sova", "För att hon tappade nyckeln"],
         answer: 0,
       },
       {
+        id: "reading-3-amir-kristall",
         passage: "Vid ruinen låg tre stenar i rad. Den första var liten, den andra var större och den tredje var störst. Amir lade en kristall på den största stenen.",
         question: "Var lade Amir kristallen?",
         options: ["På den största stenen", "I ryggsäcken", "Under bron"],
         answer: 0,
       },
     ];
-    return { ...sequenceQuestions[Math.floor(Math.random() * sequenceQuestions.length)] };
+    return pickUnansweredProblem("reading", sequenceQuestions);
   }
 
   if (level === 4) {
     const inferenceQuestions = [
       {
+        id: "reading-4-lina-regn",
         passage: "Lina såg mörka moln över skogen. Hon lade ner sin bok i väskan och sprang mot vindskyddet. Strax efter började droppar slå mot taket.",
         question: "Vad förstod Lina troligen?",
         options: ["Att det skulle börja regna", "Att solen skulle bli starkare", "Att väskan var tom"],
         answer: 0,
       },
       {
+        id: "reading-4-omar-vattna",
         passage: "Omar hittade en skylt där det stod: 'Här växer inga blommor utan vatten.' Marken var torr och blommorna hängde. Omar fyllde sin kanna vid dammen.",
         question: "Vad tänkte Omar göra?",
         options: ["Vattna blommorna", "Måla skylten", "Räkna stenar"],
         answer: 0,
       },
       {
+        id: "reading-4-sara-nyckel",
         passage: "En liten nyckel låg bredvid den låsta kistan. På kistan fanns samma stjärna som på nyckeln. Sara log och plockade upp nyckeln.",
         question: "Varför log Sara?",
         options: ["Hon trodde att nyckeln passade", "Hon ville kasta nyckeln", "Hon hittade sin mössa"],
         answer: 0,
       },
     ];
-    return { ...inferenceQuestions[Math.floor(Math.random() * inferenceQuestions.length)] };
+    return pickUnansweredProblem("reading", inferenceQuestions);
   }
 
   const pool = readingQuestions.filter((problem) => (problem.level || 2) === level);
-  const source = pool.length > 0 ? pool : readingQuestions;
-  return { ...source[Math.floor(Math.random() * source.length)] };
+  const source = (pool.length > 0 ? pool : readingQuestions).map((problem, index) => ({
+    id: `reading-${level}-${index}-${problem.question}`,
+    ...problem,
+  }));
+  return pickUnansweredProblem("reading", source);
 }
 
 function openLogicLab() {
@@ -1902,97 +1963,101 @@ function openLogicLab() {
 }
 
 function makeLogicProblem(level) {
-  const makers = [makePatternProblem, makeSortingProblem, makeRuleProblem];
-  return makers[Math.floor(Math.random() * makers.length)](level);
+  return pickUnansweredProblem("logic", makeLogicProblems(level));
 }
 
-function makePatternProblem(level) {
+function makeLogicProblems(level) {
+  return makePatternProblems(level).concat(makeSortingProblems(level), makeRuleProblems(level));
+}
+
+function makePatternProblems(level) {
   if (level === 1) {
-    const sets = [
+    return [
       { sequence: ["blå cirkel", "röd triangel", "blå cirkel", "röd triangel"], answer: "blå cirkel", options: ["blå cirkel", "röd triangel", "gul stjärna"] },
       { sequence: ["gul stjärna", "gul stjärna", "grön fyrkant", "gul stjärna", "gul stjärna"], answer: "grön fyrkant", options: ["grön fyrkant", "gul stjärna", "blå cirkel"] },
-    ];
-    const picked = sets[Math.floor(Math.random() * sets.length)];
-    return {
+    ].map((picked, index) => ({
+      id: `logic-1-pattern-${index}`,
       title: "Mönstermaskinen",
       prompt: "Maskinen har tappat nästa symbol. Vad kommer sedan?",
       kind: "pattern",
       items: picked.sequence,
       answer: picked.answer,
       options: picked.options,
-    };
+    }));
   }
 
   if (level === 2) {
-    const sets = [
+    return [
       { sequence: ["1", "3", "5", "7"], answer: "9", options: ["8", "9", "10"] },
       { sequence: ["A", "B", "B", "A", "B", "B"], answer: "A", options: ["A", "B", "C"] },
-    ];
-    const picked = sets[Math.floor(Math.random() * sets.length)];
-    return {
+    ].map((picked, index) => ({
+      id: `logic-2-pattern-${index}`,
       title: "Mönstermaskinen",
       prompt: "Hitta regeln och välj nästa ruta.",
       kind: "pattern",
       items: picked.sequence,
       answer: picked.answer,
       options: picked.options,
-    };
+    }));
   }
 
-  const sets = [
+  return [
     { sequence: ["röd cirkel", "blå triangel", "gul fyrkant", "röd cirkel", "blå triangel"], answer: "gul fyrkant", options: ["gul fyrkant", "röd triangel", "blå cirkel"] },
     { sequence: ["2", "4", "8", "16"], answer: "32", options: ["20", "24", "32"] },
-  ];
-  const picked = sets[Math.floor(Math.random() * sets.length)];
-  return {
+  ].map((picked, index) => ({
+    id: `logic-${level}-pattern-${index}`,
     title: "Mönstermaskinen",
     prompt: "Regeln är lite lurigare nu. Vilken ruta fortsätter mönstret?",
     kind: "pattern",
     items: picked.sequence,
     answer: picked.answer,
     options: picked.options,
-  };
+  }));
 }
 
-function makeSortingProblem(level) {
+function makeSortingProblems(level) {
   if (level === 1) {
     const numbers = [2, 4, 7, 6, 9];
-    return {
+    return [{
+      id: "logic-1-sort-number",
       title: "Sorteringsröret",
       prompt: "Maskinen sorterar från minst till störst. Vilket tal ligger fel?",
       kind: "sort",
       items: numbers.map(String),
       answer: "6",
       options: ["4", "6", "9"],
-    };
+    }];
   }
 
   if (level === 2) {
     const words = ["apa", "bil", "dator", "citron", "eka"];
-    return {
+    return [{
+      id: "logic-2-sort-words",
       title: "Sorteringsröret",
       prompt: "Orden ska ligga i alfabetisk ordning. Vilket ord ligger fel?",
       kind: "sort",
       items: words,
       answer: "citron",
       options: ["bil", "dator", "citron"],
-    };
+    }];
   }
 
   const items = level === 3 ? ["3", "6", "12", "9", "15"] : ["röd liten", "röd stor", "blå liten", "blå stor", "grön liten"];
-  return {
+  return [{
+    id: level === 3 ? "logic-3-sort-step" : "logic-4-sort-shape",
     title: "Sorteringsröret",
     prompt: level === 3 ? "Talen ska öka med 3 varje steg. Vilket tal stör regeln?" : "Maskinen sorterar först färg, sedan storlek. Vilken ruta bryter ordningen?",
     kind: "sort",
     items,
     answer: level === 3 ? "12" : "grön liten",
     options: level === 3 ? ["6", "12", "9"] : ["röd stor", "blå stor", "grön liten"],
-  };
+  }];
 }
 
-function makeRuleProblem(level) {
+function makeRuleProblems(level) {
   if (level === 1) {
-    return {
+    return [{
+      id: "logic-1-rule-even",
       title: "Regeldetektiven",
       prompt: "Maskinen gillar 2, 4 och 8. Den gillar inte 3, 5 och 7. Vilken regel använder den?",
       kind: "rule",
@@ -2000,11 +2065,12 @@ function makeRuleProblem(level) {
       rejected: ["3", "5", "7"],
       answer: "Jämna tal",
       options: ["Jämna tal", "Tal större än 5", "Tal med två siffror"],
-    };
+    }];
   }
 
   if (level === 2) {
-    return {
+    return [{
+      id: "logic-2-rule-three-letters",
       title: "Regeldetektiven",
       prompt: "Maskinen gillar orden sol, ros och vas. Den gillar inte sten, blomma och karta.",
       kind: "rule",
@@ -2012,10 +2078,11 @@ function makeRuleProblem(level) {
       rejected: ["sten", "blomma", "karta"],
       answer: "Tre bokstäver",
       options: ["Tre bokstäver", "Börjar på s", "Saker i rymden"],
-    };
+    }];
   }
 
-  return {
+  return [{
+    id: level === 3 ? "logic-3-rule-blue" : "logic-4-rule-small-red-corners",
     title: "Regeldetektiven",
     prompt: level === 3 ? "Maskinen gillar blå cirklar och blå fyrkanter, men inte röda cirklar." : "Maskinen gillar små röda former med hörn, men inte stora röda former eller små blå former.",
     kind: "rule",
@@ -2023,7 +2090,7 @@ function makeRuleProblem(level) {
     rejected: level === 3 ? ["röd cirkel", "gul fyrkant"] : ["stor röd triangel", "liten blå fyrkant"],
     answer: level === 3 ? "Blå former" : "Små röda former med hörn",
     options: level === 3 ? ["Blå former", "Bara cirklar", "Gula former"] : ["Små röda former med hörn", "Alla röda former", "Alla små former"],
-  };
+  }];
 }
 
 function renderLogicProblem(problem) {
@@ -2094,6 +2161,7 @@ function submitMathAnswer(event) {
   if (answer === activeProblem.answer) {
     const firstTry = pendingChallenge.attempts === 1;
     recordChallengeResult(firstTry);
+    markAnsweredQuestion("math", activeProblem);
     collectGemCluster(pendingCluster);
     closeMathPanel();
     setGameStatusText(
@@ -2115,6 +2183,7 @@ function submitReadingAnswer(chosenIndex) {
   if (chosenIndex === currentReadingProblem.answer) {
     const firstTry = pendingChallenge.attempts === 1;
     recordChallengeResult(firstTry);
+    markAnsweredQuestion("reading", currentReadingProblem);
     collectGemCluster(pendingCluster);
     closeMathPanel();
     setGameStatusText(firstTry ? "Rätt på första försöket. Bonus!" : "Rätt!", { autoClear: true });
@@ -2133,6 +2202,7 @@ function submitLogicAnswer(chosenOption) {
     const firstTry = pendingChallenge.attempts === 1;
     const firstTryBonus = firstTry ? 1 : 0;
     recordChallengeResult(firstTry);
+    markAnsweredQuestion("logic", currentLogicProblem);
     resources.rubies += pendingChallenge.reward + firstTryBonus;
     updateResourceCounters();
     closeMathPanel();
@@ -2211,9 +2281,8 @@ function renderLabBench() {
     const btn = document.createElement("button");
     btn.className = "buy-btn lab-buy-btn";
     if (owned) {
-      btn.textContent = activePixelPet === item.id ? "Aktiv" : "Välj";
-      btn.disabled = activePixelPet === item.id;
-      btn.addEventListener("click", () => equipPixelPet(item.id));
+      btn.textContent = "Byggd";
+      btn.disabled = true;
     } else {
       btn.textContent = "Bygg";
       btn.disabled = !canAfford;
@@ -2279,7 +2348,6 @@ function buyPixelPet(itemId) {
   if (!item || ownedPixelPets.has(itemId) || resources.rubies < item.rubyCost) return;
   resources.rubies -= item.rubyCost;
   ownedPixelPets.add(itemId);
-  equipPixelPet(itemId, false);
   updateResourceCounters();
   renderLabBench();
   saveGame();
@@ -2291,6 +2359,14 @@ function equipPixelPet(itemId, shouldSave = true) {
   syncPixelPet();
   renderLabBench();
   if (shouldSave) saveGame();
+}
+
+function unequipPixelPet() {
+  if (!activePixelPet) return;
+  activePixelPet = null;
+  syncPixelPet();
+  renderInventoryItems();
+  saveGame();
 }
 
 function renderShop() {
@@ -2503,9 +2579,10 @@ function renderInventoryItems() {
 
         const button = document.createElement("button");
         button.className = "buy-btn companion-equip-btn";
-        button.textContent = active ? "Aktiv" : "Aktivera";
-        button.disabled = active;
-        if (!active) {
+        button.textContent = active ? "Ta av" : "Aktivera";
+        if (active) {
+          button.addEventListener("click", unequipPixelPet);
+        } else {
           button.addEventListener("click", () => {
             equipPixelPet(item.id);
             renderInventoryItems();
