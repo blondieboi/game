@@ -2404,6 +2404,123 @@ function createBrainrotCardArt(item) {
   return art;
 }
 
+function createPixelPetCardArt(item) {
+  const art = document.createElement("div");
+  art.className = `companion-card-art companion-card-art-${item.id}`;
+
+  const fallback = createPixelPetPreview(item.id);
+  fallback.classList.add("companion-card-fallback");
+
+  const image = document.createElement("img");
+  image.className = "companion-card-image";
+  image.alt = item.name;
+  image.hidden = true;
+  image.addEventListener("load", function () {
+    image.hidden = false;
+    fallback.hidden = true;
+  });
+  image.addEventListener("error", function () {
+    image.remove();
+  });
+  image.src = `assets/pixel-pets/${item.id}.png`;
+
+  art.appendChild(image);
+  art.appendChild(fallback);
+  return art;
+}
+
+function createInventorySection(title, modifier) {
+  const section = document.createElement("section");
+  section.className = `inventory-section inventory-section-${modifier}`;
+
+  const heading = document.createElement("div");
+  heading.className = "inventory-section-title";
+  heading.textContent = title;
+
+  const grid = document.createElement("div");
+  grid.className = "inventory-section-grid";
+
+  section.appendChild(heading);
+  section.appendChild(grid);
+  inventoryItems.appendChild(section);
+  return grid;
+}
+
+function renderInventoryItems() {
+  inventoryItems.innerHTML = "";
+  if (ownedBrainrots.size === 0 && ownedPixelPets.size === 0) {
+    const empty = document.createElement("div");
+    empty.className = "inventory-empty";
+    empty.textContent = "Inga saker ännu. Handla i butiken eller bygg vid Pixelbänken!";
+    inventoryItems.appendChild(empty);
+    return;
+  }
+
+  if (ownedBrainrots.size > 0) {
+    const brainrotGrid = createInventorySection("Brainrot-kort", "brainrots");
+    brainrotShopItems
+      .filter((item) => ownedBrainrots.has(item.id))
+      .forEach((item) => {
+        const card = document.createElement("div");
+        card.className = `inventory-card brainrot-card rarity-${item.rarity || "common"}`;
+
+        const name = document.createElement("div");
+        name.className = "brainrot-card-name";
+        name.textContent = item.name;
+
+        const rarity = document.createElement("span");
+        rarity.className = "brainrot-card-rarity";
+        rarity.textContent = getBrainrotRarityLabel(item.rarity);
+
+        const desc = document.createElement("p");
+        desc.className = "brainrot-card-desc";
+        desc.textContent = item.description;
+
+        card.appendChild(createBrainrotCardArt(item));
+        card.appendChild(name);
+        card.appendChild(rarity);
+        card.appendChild(desc);
+        brainrotGrid.appendChild(card);
+      });
+  }
+
+  if (ownedPixelPets.size > 0) {
+    const companionGrid = createInventorySection("Följeslagare", "companions");
+    pixelPetItems
+      .filter((item) => ownedPixelPets.has(item.id))
+      .forEach((item) => {
+        const active = activePixelPet === item.id;
+        const card = document.createElement("div");
+        card.className = active ? "inventory-card companion-card companion-card-active" : "inventory-card companion-card";
+
+        const name = document.createElement("div");
+        name.className = "companion-card-name";
+        name.textContent = item.name;
+
+        const desc = document.createElement("p");
+        desc.className = "companion-card-desc";
+        desc.textContent = item.description;
+
+        const button = document.createElement("button");
+        button.className = "buy-btn companion-equip-btn";
+        button.textContent = active ? "Aktiv" : "Aktivera";
+        button.disabled = active;
+        if (!active) {
+          button.addEventListener("click", () => {
+            equipPixelPet(item.id);
+            renderInventoryItems();
+          });
+        }
+
+        card.appendChild(createPixelPetCardArt(item));
+        card.appendChild(name);
+        card.appendChild(desc);
+        card.appendChild(button);
+        companionGrid.appendChild(card);
+      });
+  }
+}
+
 function openShop() {
   if (typeof resetMobileInput === "function") resetMobileInput();
   if (gameUI.shopOpen) return;
@@ -2419,60 +2536,7 @@ function openInventory() {
   if (gameUI.inventoryOpen) return;
   if (gameUI.pointerLocked && document.exitPointerLock) document.exitPointerLock();
   gameUI.inventoryOpen = true;
-  inventoryItems.innerHTML = "";
-  if (ownedBrainrots.size === 0 && ownedPixelPets.size === 0) {
-    const empty = document.createElement("div");
-    empty.className = "inventory-empty";
-    empty.textContent = "Inga saker ännu. Handla i butiken eller bygg vid Pixelbänken!";
-    inventoryItems.appendChild(empty);
-  } else {
-    brainrotShopItems
-      .filter((item) => ownedBrainrots.has(item.id))
-      .forEach((item) => {
-        const card = document.createElement("div");
-        card.className = `inventory-card brainrot-card rarity-${item.rarity || "common"}`;
-
-        const top = document.createElement("div");
-        top.className = "brainrot-card-top";
-
-        const name = document.createElement("div");
-        name.className = "brainrot-card-name";
-        name.textContent = item.name;
-
-        const rarity = document.createElement("span");
-        rarity.className = "brainrot-card-rarity";
-        rarity.textContent = getBrainrotRarityLabel(item.rarity);
-
-        const desc = document.createElement("p");
-        desc.className = "brainrot-card-desc";
-        desc.textContent = item.description;
-
-        top.appendChild(name);
-        top.appendChild(rarity);
-        card.appendChild(top);
-        card.appendChild(createBrainrotCardArt(item));
-        card.appendChild(desc);
-        inventoryItems.appendChild(card);
-      });
-    pixelPetItems
-      .filter((item) => ownedPixelPets.has(item.id))
-      .forEach((item) => {
-        const card = document.createElement("div");
-        card.className = "inventory-item";
-
-        const icon = document.createElement("span");
-        icon.className = "inventory-item-emoji inventory-item-symbol";
-        icon.textContent = item.symbol;
-
-        const name = document.createElement("span");
-        name.className = "inventory-item-name";
-        name.textContent = activePixelPet === item.id ? `${item.name} (aktiv)` : item.name;
-
-        card.appendChild(icon);
-        card.appendChild(name);
-        inventoryItems.appendChild(card);
-      });
-  }
+  renderInventoryItems();
   inventoryPanel.hidden = false;
 }
 
