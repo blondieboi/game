@@ -62,6 +62,11 @@ function setGameStatusText(message, { autoClear = false } = {}) {
   }, GAME_STATUS_CLEAR_DELAY);
 }
 
+function setMathFeedback(message) {
+  mathFeedback.textContent = message;
+  mathFeedback.hidden = !message;
+}
+
 function closeMathPanel({ restoreCluster = false } = {}) {
   if (typeof resetMobileInput === "function") resetMobileInput();
   if (restoreCluster && pendingCluster && g) {
@@ -88,7 +93,7 @@ function closeMathPanel({ restoreCluster = false } = {}) {
   currentLogicProblem = null;
   pendingChallenge = null;
   pendingCluster = null;
-  mathFeedback.textContent = "";
+  setMathFeedback("");
   autoLockPointer();
 }
 
@@ -1667,7 +1672,7 @@ function openMathPanel(cluster) {
     true,
   );
   mathReward.className = `math-reward math-reward--${cluster.userData.kind}`;
-  mathFeedback.textContent = "";
+  setMathFeedback("");
   mathPanel.hidden = false;
   setGameStatusText("");
 
@@ -1884,7 +1889,7 @@ function openLogicLab() {
   currentReadingProblem = null;
   mathReward.textContent = rewardText("logic", pendingChallenge.reward, pendingChallenge.level, true);
   mathReward.className = "math-reward math-reward--logic";
-  mathFeedback.textContent = "";
+  setMathFeedback("");
   mathForm.hidden = true;
   readingForm.hidden = true;
   logicForm.hidden = false;
@@ -2099,7 +2104,7 @@ function submitMathAnswer(event) {
   }
 
   recordChallengeResult(false);
-  mathFeedback.textContent = "Nästan. Försök igen.";
+  setMathFeedback("Nästan. Försök igen.");
   mathAnswer.select();
 }
 
@@ -2117,7 +2122,7 @@ function submitReadingAnswer(chosenIndex) {
   }
 
   recordChallengeResult(false);
-  mathFeedback.textContent = "Fel. Försök igen.";
+  setMathFeedback("Fel. Försök igen.");
 }
 
 function submitLogicAnswer(chosenOption) {
@@ -2139,7 +2144,7 @@ function submitLogicAnswer(chosenOption) {
   }
 
   recordChallengeResult(false);
-  mathFeedback.textContent = "Pixel: Nästan. Leta efter vad som ändras, sorteras eller väljs bort.";
+  setMathFeedback("Pixel: Nästan. Leta efter vad som ändras, sorteras eller väljs bort.");
 }
 
 function collectGemCluster(cluster) {
@@ -2295,11 +2300,10 @@ function renderShop() {
     const canAfford = resources.emeralds >= item.emeraldCost && resources.diamonds >= item.diamondCost;
 
     const card = document.createElement("div");
-    card.className = "shop-item";
+    card.className = `shop-item rarity-${item.rarity || "common"}`;
 
-    const emoji = document.createElement("span");
-    emoji.className = "shop-item-emoji";
-    emoji.textContent = item.emoji;
+    const art = createBrainrotCardArt(item);
+    art.classList.add("shop-item-art");
 
     const info = document.createElement("div");
     info.className = "shop-item-info";
@@ -2312,8 +2316,16 @@ function renderShop() {
     desc.className = "shop-item-desc";
     desc.textContent = item.description;
 
+    const rarity = document.createElement("span");
+    rarity.className = "brainrot-card-rarity shop-item-rarity";
+    rarity.textContent = getBrainrotRarityLabel(item.rarity);
+
     info.appendChild(name);
+    info.appendChild(rarity);
     info.appendChild(desc);
+
+    const actions = document.createElement("div");
+    actions.className = "shop-item-actions";
 
     const price = document.createElement("span");
     price.className = "shop-item-price";
@@ -2334,10 +2346,12 @@ function renderShop() {
       btn.addEventListener("click", () => buyBrainrot(item.id));
     }
 
-    card.appendChild(emoji);
+    actions.appendChild(price);
+    actions.appendChild(btn);
+
+    card.appendChild(art);
     card.appendChild(info);
-    card.appendChild(price);
-    card.appendChild(btn);
+    card.appendChild(actions);
     shopItems.appendChild(card);
   });
 }
@@ -2353,6 +2367,41 @@ function buyBrainrot(itemId) {
   updateResourceCounters();
   renderShop();
   saveGame();
+}
+
+function getBrainrotRarityLabel(rarity) {
+  if (rarity === "mythic") return "Mytisk";
+  if (rarity === "legendary") return "Legendarisk";
+  if (rarity === "epic") return "Episk";
+  if (rarity === "rare") return "Sällsynt";
+  if (rarity === "uncommon") return "Ovanlig";
+  return "Vanlig";
+}
+
+function createBrainrotCardArt(item) {
+  const art = document.createElement("div");
+  art.className = `brainrot-card-art brainrot-card-art-${item.id}`;
+
+  const fallback = document.createElement("span");
+  fallback.className = "brainrot-card-fallback";
+  fallback.textContent = item.emoji;
+
+  const image = document.createElement("img");
+  image.className = "brainrot-card-image";
+  image.alt = item.name;
+  image.hidden = true;
+  image.addEventListener("load", function () {
+    image.hidden = false;
+    fallback.hidden = true;
+  });
+  image.addEventListener("error", function () {
+    image.remove();
+  });
+  image.src = `assets/brainrots/${item.id}.png`;
+
+  art.appendChild(image);
+  art.appendChild(fallback);
+  return art;
 }
 
 function openShop() {
@@ -2381,18 +2430,28 @@ function openInventory() {
       .filter((item) => ownedBrainrots.has(item.id))
       .forEach((item) => {
         const card = document.createElement("div");
-        card.className = "inventory-item";
+        card.className = `inventory-card brainrot-card rarity-${item.rarity || "common"}`;
 
-        const emoji = document.createElement("span");
-        emoji.className = "inventory-item-emoji";
-        emoji.textContent = item.emoji;
+        const top = document.createElement("div");
+        top.className = "brainrot-card-top";
 
-        const name = document.createElement("span");
-        name.className = "inventory-item-name";
+        const name = document.createElement("div");
+        name.className = "brainrot-card-name";
         name.textContent = item.name;
 
-        card.appendChild(emoji);
-        card.appendChild(name);
+        const rarity = document.createElement("span");
+        rarity.className = "brainrot-card-rarity";
+        rarity.textContent = getBrainrotRarityLabel(item.rarity);
+
+        const desc = document.createElement("p");
+        desc.className = "brainrot-card-desc";
+        desc.textContent = item.description;
+
+        top.appendChild(name);
+        top.appendChild(rarity);
+        card.appendChild(top);
+        card.appendChild(createBrainrotCardArt(item));
+        card.appendChild(desc);
         inventoryItems.appendChild(card);
       });
     pixelPetItems
