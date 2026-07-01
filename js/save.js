@@ -13,14 +13,17 @@ function cloneLearningProgress(progress) {
     math: {
       level: Math.max(1, Math.min(4, Number(source.math && source.math.level) || 1)),
       recent: Array.isArray(source.math && source.math.recent) ? source.math.recent.slice(-5).map(Boolean) : [],
+      answered: Array.isArray(source.math && source.math.answered) ? source.math.answered.map(String) : [],
     },
     reading: {
       level: Math.max(1, Math.min(4, Number(source.reading && source.reading.level) || 1)),
       recent: Array.isArray(source.reading && source.reading.recent) ? source.reading.recent.slice(-5).map(Boolean) : [],
+      answered: Array.isArray(source.reading && source.reading.answered) ? source.reading.answered.map(String) : [],
     },
     logic: {
       level: Math.max(1, Math.min(4, Number(source.logic && source.logic.level) || 1)),
       recent: Array.isArray(source.logic && source.logic.recent) ? source.logic.recent.slice(-5).map(Boolean) : [],
+      answered: Array.isArray(source.logic && source.logic.answered) ? source.logic.answered.map(String) : [],
     },
   };
 }
@@ -29,10 +32,13 @@ function setLearningProgress(progress) {
   const normalized = cloneLearningProgress(progress);
   learningProgress.math.level = normalized.math.level;
   learningProgress.math.recent = normalized.math.recent;
+  learningProgress.math.answered = normalized.math.answered;
   learningProgress.reading.level = normalized.reading.level;
   learningProgress.reading.recent = normalized.reading.recent;
+  learningProgress.reading.answered = normalized.reading.answered;
   learningProgress.logic.level = normalized.logic.level;
   learningProgress.logic.recent = normalized.logic.recent;
+  learningProgress.logic.answered = normalized.logic.answered;
 }
 
 function saveGame() {
