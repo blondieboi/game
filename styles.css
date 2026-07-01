@@ -2256,6 +2256,8 @@ button[aria-pressed="true"] {
   display: grid;
   width: min(46rem, calc(100vw - 2rem));
   max-height: calc(100vh - 2rem);
+  overflow-y: auto;
+  overscroll-behavior: contain;
   gap: 0.95rem;
   padding: 1.4rem;
   transform: translate(-50%, -50%);
@@ -2289,6 +2291,9 @@ button[aria-pressed="true"] {
   top: 50%;
   display: grid;
   width: min(43rem, calc(100vw - 2rem));
+  max-height: calc(100vh - 2rem);
+  overflow-y: auto;
+  overscroll-behavior: contain;
   gap: 0.75rem;
   padding: 1.25rem;
   transform: translate(-50%, -50%);
@@ -3210,6 +3215,9 @@ button[aria-pressed="true"] {
   grid-template-columns: minmax(0, 1fr) auto;
   align-items: start;
   width: min(32rem, calc(100vw - 2rem));
+  max-height: calc(100vh - 2rem);
+  overflow-y: auto;
+  overscroll-behavior: contain;
   gap: 0.75rem;
   padding: 1.25rem;
   transform: translate(-50%, -50%);
@@ -3758,13 +3766,21 @@ button[aria-pressed="true"] {
   .math-panel {
     width: calc(100vw - 1rem);
     max-height: calc(100dvh - 1rem);
+    max-height: calc(100svh - 1rem);
     padding: 1rem;
   }
 
   .shop-items,
   .lab-items,
   .inventory-items {
-    max-height: calc(100dvh - 10rem);
+    max-height: calc(100svh - 10rem);
+  }
+
+  .reading-passage,
+  .logic-machine {
+    max-height: max(8rem, calc(100svh - 19rem));
+    overflow-y: auto;
+    overscroll-behavior: contain;
   }
 
   .shop-items {
@@ -3885,12 +3901,12 @@ button[aria-pressed="true"] {
   .lab-panel,
   .inventory-panel,
   .math-panel {
-    max-height: calc(100dvh - 0.75rem);
+    max-height: calc(100svh - 0.75rem);
   }
 
   .shop-items,
   .lab-items,
   .inventory-items {
-    max-height: calc(100dvh - 8.5rem);
+    max-height: calc(100svh - 8.5rem);
   }
 }

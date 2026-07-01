@@ -1720,6 +1720,11 @@ function openMathPanel(cluster) {
     readingForm.hidden = false;
     logicForm.hidden = true;
     currentReadingProblem = makeReadingProblem(pendingChallenge.level);
+    if (!currentReadingProblem) {
+      closeMathPanel({ restoreCluster: true });
+      setGameStatusText("Du har svarat på alla läsfrågor just nu.", { autoClear: true });
+      return;
+    }
     readingPassage.textContent = currentReadingProblem.passage;
     readingQuestion.textContent = currentReadingProblem.question;
     readingChoices.innerHTML = "";
@@ -1739,6 +1744,11 @@ function openMathPanel(cluster) {
   readingForm.hidden = true;
   logicForm.hidden = true;
   activeProblem = makeMathProblem(pendingChallenge.level);
+  if (!activeProblem) {
+    closeMathPanel({ restoreCluster: true });
+    setGameStatusText("Du har svarat på alla mattefrågor just nu.", { autoClear: true });
+    return;
+  }
   mathQuestion.textContent = activeProblem.prompt || "Räkna ut:";
   mathVisual.innerHTML = renderColumnVisual(activeProblem);
   mathAnswer.value = "";
@@ -1804,17 +1814,13 @@ function markAnsweredQuestion(skill, problem) {
   if (!problem || !problem.id) return;
   const answered = getAnsweredQuestions(skill);
   if (!answered.includes(problem.id)) answered.push(problem.id);
+  saveGame();
 }
 
 function pickUnansweredProblem(skill, problems) {
   const answered = getAnsweredQuestions(skill);
-  const problemIds = problems.map((problem) => problem.id);
-  let available = problems.filter((problem) => !answered.includes(problem.id));
-
-  if (available.length === 0) {
-    learningProgress[skill].answered = answered.filter((id) => !problemIds.includes(id));
-    available = problems;
-  }
+  const available = problems.filter((problem) => !answered.includes(problem.id));
+  if (available.length === 0) return null;
 
   const picked = available[Math.floor(Math.random() * available.length)];
   return {
@@ -1985,6 +1991,11 @@ function openLogicLab() {
   pendingCluster = null;
   pendingChallenge = createChallenge("logic");
   currentLogicProblem = makeLogicProblem(pendingChallenge.level);
+  if (!currentLogicProblem) {
+    pendingChallenge = null;
+    setGameStatusText("Pixel: Du har löst alla logikproblem just nu.", { autoClear: true });
+    return;
+  }
   activeProblem = null;
   currentReadingProblem = null;
   mathReward.textContent = rewardText("logic", pendingChallenge.reward, pendingChallenge.level, true);
