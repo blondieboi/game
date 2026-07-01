@@ -1284,15 +1284,17 @@ function createFallbackAvatarVisual() {
 }
 
 function addStylizedBody(group, shirtMat, pantsMat, trimMat, shadowMat, badgeMat) {
-  var torso = new THREE.Mesh(new THREE.CylinderGeometry(0.27, 0.35, 0.66, 8), shirtMat);
+  var torso = new THREE.Mesh(new THREE.CylinderGeometry(0.27, 0.35, 0.66, 18), shirtMat);
   torso.position.set(0, 1.08, 0);
   torso.scale.z = 0.72;
   group.add(torso);
 
-  var chest = box(0.44, 0.34, 0.035, shirtMat, 0, 1.16, 0.25);
+  var chest = ellipsoid(0.24, shirtMat, 0, 1.15, 0.22, 1.18, 1.35, 0.22);
   chest.rotation.x = -0.08;
   group.add(chest);
-  group.add(box(0.72, 0.12, 0.28, shirtMat, 0, 1.38, 0));
+  group.add(ellipsoid(0.14, shirtMat, -0.28, 1.36, 0, 1.05, 0.78, 0.9));
+  group.add(ellipsoid(0.14, shirtMat, 0.28, 1.36, 0, 1.05, 0.78, 0.9));
+  group.add(ellipsoid(0.22, shirtMat, 0, 1.38, 0.01, 1.35, 0.38, 0.72));
   group.add(box(0.56, 0.055, 0.31, trimMat, 0, 1.39, 0.03));
   group.add(box(0.55, 0.07, 0.33, trimMat, 0, 0.76, 0.01));
 
@@ -1303,7 +1305,7 @@ function addStylizedBody(group, shirtMat, pantsMat, trimMat, shadowMat, badgeMat
   group.add(collarLeft);
   group.add(collarRight);
 
-  var shorts = new THREE.Mesh(new THREE.CylinderGeometry(0.31, 0.28, 0.2, 8), pantsMat);
+  var shorts = new THREE.Mesh(new THREE.CylinderGeometry(0.31, 0.28, 0.2, 18), pantsMat);
   shorts.position.set(0, 0.68, 0);
   shorts.scale.z = 0.74;
   group.add(shorts);
@@ -1324,19 +1326,23 @@ function createStylizedArm(shirtMat, skinMat, trimMat, x, y, z, side) {
   var grp = new THREE.Group();
   grp.position.set(x, y, z);
 
-  var sleeve = new THREE.Mesh(new THREE.CylinderGeometry(0.105, 0.09, 0.32, 14), shirtMat);
+  var shoulder = ellipsoid(0.115, shirtMat, 0, -0.02, 0, 1.08, 0.82, 0.96);
+  grp.add(shoulder);
+
+  var sleeve = new THREE.Mesh(new THREE.CylinderGeometry(0.105, 0.09, 0.32, 18), shirtMat);
   sleeve.position.y = -0.16;
   grp.add(sleeve);
 
-  var cuff = new THREE.Mesh(new THREE.CylinderGeometry(0.095, 0.095, 0.045, 14), trimMat);
+  var cuff = new THREE.Mesh(new THREE.CylinderGeometry(0.095, 0.095, 0.045, 18), trimMat);
   cuff.position.y = -0.32;
   grp.add(cuff);
 
-  var forearm = new THREE.Mesh(new THREE.CylinderGeometry(0.075, 0.065, 0.3, 14), skinMat);
+  var forearm = new THREE.Mesh(new THREE.CylinderGeometry(0.075, 0.065, 0.3, 18), skinMat);
   forearm.position.y = -0.48;
   forearm.rotation.z = side * 0.08;
   grp.add(forearm);
 
+  grp.add(ellipsoid(0.055, skinMat, side * 0.01, -0.36, 0.01, 0.9, 0.7, 0.9));
   var hand = ellipsoid(0.09, skinMat, side * 0.015, -0.66, 0.02, 0.9, 0.75, 1.05);
   grp.add(hand);
   return grp;
@@ -1346,20 +1352,21 @@ function createStylizedLeg(pantsMat, shoeMat, x, y, z) {
   var grp = new THREE.Group();
   grp.position.set(x, y, z);
 
-  var thigh = new THREE.Mesh(new THREE.CylinderGeometry(0.13, 0.115, 0.36, 14), pantsMat);
+  var thigh = new THREE.Mesh(new THREE.CylinderGeometry(0.13, 0.115, 0.36, 18), pantsMat);
   thigh.position.y = -0.18;
   grp.add(thigh);
 
   var knee = ellipsoid(0.08, pantsMat, 0, -0.38, 0.02, 0.95, 0.58, 0.9);
   grp.add(knee);
 
-  var shin = new THREE.Mesh(new THREE.CylinderGeometry(0.105, 0.095, 0.34, 14), pantsMat);
+  var shin = new THREE.Mesh(new THREE.CylinderGeometry(0.105, 0.095, 0.34, 18), pantsMat);
   shin.position.y = -0.55;
   grp.add(shin);
 
-  var shoe = box(0.28, 0.13, 0.48, shoeMat, 0, -0.78, 0.1);
-  shoe.rotation.x = -0.04;
+  var shoe = ellipsoid(0.16, shoeMat, 0, -0.79, 0.1, 0.9, 0.42, 1.55);
+  shoe.rotation.x = -0.05;
   grp.add(shoe);
+  grp.add(ellipsoid(0.08, shoeMat, 0, -0.77, 0.29, 1.15, 0.38, 0.85));
   return grp;
 }
 
@@ -1368,9 +1375,10 @@ function addFallbackHair(group, hairMat) {
   group.add(ellipsoid(0.18, hairMat, 0, 1.84, 0.13, 1.45, 0.42, 0.5));
 
   if (characterState.hair === 'hair-short') {
-    group.add(box(0.42, 0.1, 0.24, hairMat, 0, 1.86, 0.1));
+    group.add(ellipsoid(0.12, hairMat, 0, 1.86, 0.1, 1.85, 0.48, 0.9));
     group.add(ellipsoid(0.08, hairMat, -0.18, 1.77, 0.12, 0.65, 1.2, 0.6));
     group.add(ellipsoid(0.08, hairMat, 0.18, 1.77, 0.12, 0.65, 1.2, 0.6));
+    group.add(ellipsoid(0.06, hairMat, 0.02, 1.9, 0.21, 0.8, 0.55, 0.7));
     return;
   }
 
@@ -1390,17 +1398,25 @@ function addFallbackHair(group, hairMat) {
     group.add(ellipsoid(0.22, hairMat, 0, 1.61, -0.2, 1.1, 1.75, 0.42));
     group.add(ellipsoid(0.12, hairMat, -0.25, 1.65, 0.02, 0.75, 1.7, 0.7));
     group.add(ellipsoid(0.12, hairMat, 0.25, 1.65, 0.02, 0.75, 1.7, 0.7));
+    group.add(ellipsoid(0.08, hairMat, -0.14, 1.83, 0.17, 0.95, 0.6, 0.7));
+    group.add(ellipsoid(0.08, hairMat, 0.14, 1.83, 0.17, 0.95, 0.6, 0.7));
     return;
   }
 
-  var wave = box(0.38, 0.095, 0.18, hairMat, -0.06, 1.9, 0.12);
+  var wave = ellipsoid(0.11, hairMat, -0.06, 1.9, 0.12, 1.8, 0.48, 0.82);
   wave.rotation.z = -0.12;
   group.add(wave);
   group.add(ellipsoid(0.11, hairMat, 0.19, 1.79, 0.09, 0.85, 1.2, 0.7));
+  group.add(ellipsoid(0.065, hairMat, -0.18, 1.78, 0.12, 0.8, 1.1, 0.65));
 }
 
 function addFallbackFace(group, skinMat, eyeMat) {
+  var blushMat = toonMat('#ec8d83');
+  var shineMat = toonMat('#fffaf2');
+
   group.add(ellipsoid(0.032, skinMat, 0, 1.66, 0.28, 0.75, 0.9, 1.15));
+  group.add(ellipsoid(0.024, blushMat, -0.15, 1.64, 0.265, 1.35, 0.55, 0.28));
+  group.add(ellipsoid(0.024, blushMat, 0.15, 1.64, 0.265, 1.35, 0.55, 0.28));
 
   if (characterState.face === 'face-apoc') {
     group.add(ellipsoid(0.035, eyeMat, -0.1, 1.71, 0.25, 0.8, 1.05, 0.55));
@@ -1420,6 +1436,10 @@ function addFallbackFace(group, skinMat, eyeMat) {
 
   group.add(ellipsoid(0.035, eyeMat, -0.1, 1.71, 0.25, 0.8, 1.05, 0.55));
   group.add(ellipsoid(0.035, eyeMat, 0.1, 1.71, 0.25, 0.8, 1.05, 0.55));
+  group.add(ellipsoid(0.011, shineMat, -0.09, 1.725, 0.275, 0.9, 0.9, 0.4));
+  group.add(ellipsoid(0.011, shineMat, 0.11, 1.725, 0.275, 0.9, 0.9, 0.4));
+  group.add(ellipsoid(0.026, eyeMat, -0.1, 1.765, 0.235, 1.35, 0.32, 0.26));
+  group.add(ellipsoid(0.026, eyeMat, 0.1, 1.765, 0.235, 1.35, 0.32, 0.26));
 
   if (characterState.face === 'face-focus') {
     group.add(box(0.22, 0.025, 0.025, eyeMat, 0, 1.59, 0.28));
@@ -1428,14 +1448,13 @@ function addFallbackFace(group, skinMat, eyeMat) {
     return;
   }
 
-  var mouth = new THREE.Mesh(new THREE.TorusGeometry(0.08, 0.012, 6, 18, Math.PI), eyeMat);
-  mouth.position.set(0, 1.59, 0.27);
-  mouth.rotation.set(0, 0, Math.PI);
-  group.add(mouth);
+  group.add(ellipsoid(0.018, eyeMat, -0.055, 1.6, 0.252, 1.15, 0.48, 0.24));
+  group.add(ellipsoid(0.018, eyeMat, 0, 1.58, 0.258, 1.25, 0.48, 0.22));
+  group.add(ellipsoid(0.018, eyeMat, 0.055, 1.6, 0.252, 1.15, 0.48, 0.24));
 }
 
 function addFallbackBadge(group, badgeMat, trimMat) {
-  var badge = new THREE.Mesh(new THREE.CylinderGeometry(0.065, 0.065, 0.018, 6), badgeMat);
+  var badge = new THREE.Mesh(new THREE.CylinderGeometry(0.065, 0.065, 0.018, 24), badgeMat);
   badge.position.set(0.17, 1.16, 0.25);
   badge.rotation.x = Math.PI / 2;
   group.add(badge);
@@ -1443,6 +1462,7 @@ function addFallbackBadge(group, badgeMat, trimMat) {
   var shine = box(0.055, 0.015, 0.016, trimMat, 0.15, 1.19, 0.27);
   shine.rotation.z = -0.55;
   group.add(shine);
+  group.add(ellipsoid(0.018, trimMat, 0.19, 1.14, 0.27, 0.9, 0.9, 0.32));
 }
 
 function bindFallbackParts(root, visual) {

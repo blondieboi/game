@@ -2419,6 +2419,12 @@ button[aria-pressed="true"] {
   aspect-ratio: auto;
 }
 
+.shop-item-art .brainrot-card-image {
+  display: block;
+  object-fit: cover;
+  object-position: center;
+}
+
 .shop-item-emoji {
   display: grid;
   place-items: center;
