@@ -2632,12 +2632,15 @@ button[aria-pressed="true"] {
 }
 
 .pet-preview {
+  padding: 0.2rem;
   overflow: hidden;
 }
 
-.pet-preview span {
-  position: absolute;
+.pet-preview-image {
   display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }
 
 .pet-preview--kodkub .pet-cube {
@@ -3148,7 +3151,7 @@ button[aria-pressed="true"] {
   object-fit: contain;
 }
 
-.companion-card-fallback {
+.companion-card-preview {
   width: 4.6rem;
   height: 4.6rem;
   transform: scale(1.18);

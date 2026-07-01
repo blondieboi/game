@@ -2334,40 +2334,21 @@ function renderLabBench() {
   });
 }
 
-function createPixelPetPreview(itemId) {
+function createPixelPetPreview(itemId, altText = "") {
   const preview = document.createElement("span");
   preview.className = `lab-item-icon pet-preview pet-preview--${itemId}`;
-  preview.setAttribute("aria-hidden", "true");
 
-  if (itemId === "minirobot") {
-    appendPreviewPart(preview, "pet-antenna");
-    appendPreviewPart(preview, "pet-body");
-    appendPreviewPart(preview, "pet-screen");
-    appendPreviewPart(preview, "pet-eye pet-eye-left");
-    appendPreviewPart(preview, "pet-eye pet-eye-right");
-    appendPreviewPart(preview, "pet-leg pet-leg-left");
-    appendPreviewPart(preview, "pet-leg pet-leg-right");
-  } else if (itemId === "gnistdronare") {
-    appendPreviewPart(preview, "pet-ring");
-    appendPreviewPart(preview, "pet-core");
-    appendPreviewPart(preview, "pet-spark");
-    appendPreviewPart(preview, "pet-dot pet-dot-left");
-    appendPreviewPart(preview, "pet-dot pet-dot-right");
-  } else {
-    appendPreviewPart(preview, "pet-cube");
-    appendPreviewPart(preview, "pet-cube-shine");
-    appendPreviewPart(preview, "pet-eye pet-eye-left");
-    appendPreviewPart(preview, "pet-eye pet-eye-right");
-    appendPreviewPart(preview, "pet-mouth");
+  if (!altText) {
+    preview.setAttribute("aria-hidden", "true");
   }
 
-  return preview;
-}
+  const image = document.createElement("img");
+  image.className = "pet-preview-image";
+  image.alt = altText;
+  image.src = `assets/pixel-pets/${itemId}.png`;
+  preview.appendChild(image);
 
-function appendPreviewPart(parent, className) {
-  const part = document.createElement("span");
-  part.className = className;
-  parent.appendChild(part);
+  return preview;
 }
 
 function openLabBench() {
@@ -2531,24 +2512,9 @@ function createPixelPetCardArt(item) {
   const art = document.createElement("div");
   art.className = `companion-card-art companion-card-art-${item.id}`;
 
-  const fallback = createPixelPetPreview(item.id);
-  fallback.classList.add("companion-card-fallback");
-
-  const image = document.createElement("img");
-  image.className = "companion-card-image";
-  image.alt = item.name;
-  image.hidden = true;
-  image.addEventListener("load", function () {
-    image.hidden = false;
-    fallback.hidden = true;
-  });
-  image.addEventListener("error", function () {
-    image.remove();
-  });
-  image.src = `assets/pixel-pets/${item.id}.png`;
-
-  art.appendChild(image);
-  art.appendChild(fallback);
+  const preview = createPixelPetPreview(item.id, item.name);
+  preview.classList.add("companion-card-preview");
+  art.appendChild(preview);
   return art;
 }
 
