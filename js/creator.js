@@ -154,6 +154,8 @@ function safeSetLearningProgress(progress) {
     learningProgress[topic].level = Math.max(1, Math.min(4, Number(source[topic] && source[topic].level) || 1));
     learningProgress[topic].recent =
       Array.isArray(source[topic] && source[topic].recent) ? source[topic].recent.slice(-5).map(Boolean) : [];
+    learningProgress[topic].answered =
+      Array.isArray(source[topic] && source[topic].answered) ? source[topic].answered.map(String) : [];
   });
 }
 

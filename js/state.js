@@ -298,14 +298,14 @@ var pixelPetItems = [
   { id: "gnistdronare", name: "Gnistdrönare", symbol: "*", description: "Svävar efter dig med ett mjukt rubinsken.", rubyCost: 12 },
 ];
 var DEFAULT_LEARNING_PROGRESS = {
-  math: { level: 1, recent: [] },
-  reading: { level: 1, recent: [] },
-  logic: { level: 1, recent: [] },
+  math: { level: 1, recent: [], answered: [] },
+  reading: { level: 1, recent: [], answered: [] },
+  logic: { level: 1, recent: [], answered: [] },
 };
 var learningProgress = {
-  math: { level: 1, recent: [] },
-  reading: { level: 1, recent: [] },
-  logic: { level: 1, recent: [] },
+  math: { level: 1, recent: [], answered: [] },
+  reading: { level: 1, recent: [], answered: [] },
+  logic: { level: 1, recent: [], answered: [] },
 };
 
 var gameUI = {
