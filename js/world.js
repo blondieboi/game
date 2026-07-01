@@ -39,8 +39,31 @@ let pendingCluster = null;
 let currentReadingProblem = null;
 let currentLogicProblem = null;
 let pendingChallenge = null;
+var gameStatusClearTimer = null;
+var GAME_STATUS_CLEAR_DELAY = 4000;
+
+function clearGameStatusTimer() {
+  if (!gameStatusClearTimer) return;
+  window.clearTimeout(gameStatusClearTimer);
+  gameStatusClearTimer = null;
+}
+
+function setGameStatusText(message, { autoClear = false } = {}) {
+  clearGameStatusTimer();
+  gameStatus.textContent = message;
+
+  if (!autoClear || !message) return;
+
+  gameStatusClearTimer = window.setTimeout(() => {
+    if (gameStatus.textContent === message) {
+      gameStatus.textContent = "";
+    }
+    gameStatusClearTimer = null;
+  }, GAME_STATUS_CLEAR_DELAY);
+}
 
 function closeMathPanel({ restoreCluster = false } = {}) {
+  if (typeof resetMobileInput === "function") resetMobileInput();
   if (restoreCluster && pendingCluster && g) {
     pendingCluster.userData.available = true;
     const away = new THREE.Vector3(
@@ -78,6 +101,7 @@ function clearGameState() {
 }
 
 function closeShop() {
+  if (typeof resetMobileInput === "function") resetMobileInput();
   if (!gameUI.shopOpen) return;
   gameUI.shopOpen = false;
   shopPanel.hidden = true;
@@ -85,6 +109,7 @@ function closeShop() {
 }
 
 function closeLabBench({ restorePointer = true } = {}) {
+  if (typeof resetMobileInput === "function") resetMobileInput();
   if (!gameUI.labOpen) return;
   gameUI.labOpen = false;
   labPanel.hidden = true;
@@ -92,6 +117,7 @@ function closeLabBench({ restorePointer = true } = {}) {
 }
 
 function closeInventory() {
+  if (typeof resetMobileInput === "function") resetMobileInput();
   if (!gameUI.inventoryOpen) return;
   gameUI.inventoryOpen = false;
   inventoryPanel.hidden = true;
@@ -101,6 +127,7 @@ function closeInventory() {
 function autoLockPointer() {
   if (!g || !g.running) return;
   if (!mathPanel.hidden || gameUI.shopOpen || gameUI.labOpen || gameUI.inventoryOpen || gameUI.pointerLocked) return;
+  if (typeof shouldUsePointerLock === "function" && !shouldUsePointerLock()) return;
   g.renderer.domElement.requestPointerLock();
 }
 
@@ -1642,7 +1669,7 @@ function openMathPanel(cluster) {
   mathReward.className = `math-reward math-reward--${cluster.userData.kind}`;
   mathFeedback.textContent = "";
   mathPanel.hidden = false;
-  gameStatus.textContent = "";
+  setGameStatusText("");
 
   if (cluster.userData.kind === "diamond") {
     mathForm.hidden = true;
@@ -1866,7 +1893,7 @@ function openLogicLab() {
   renderLogicProblem(currentLogicProblem);
   mathPanel.hidden = false;
   labPrompt.hidden = true;
-  gameStatus.textContent = "";
+  setGameStatusText("");
 }
 
 function makeLogicProblem(level) {
@@ -2064,8 +2091,10 @@ function submitMathAnswer(event) {
     recordChallengeResult(firstTry);
     collectGemCluster(pendingCluster);
     closeMathPanel();
-    gameStatus.textContent =
-      firstTry ? "Rätt på första försöket. Bonus!" : "Rätt. Nya kristaller dök upp någon annanstans.";
+    setGameStatusText(
+      firstTry ? "Rätt på första försöket. Bonus!" : "Rätt. Nya kristaller dök upp någon annanstans.",
+      { autoClear: true },
+    );
     return;
   }
 
@@ -2083,7 +2112,7 @@ function submitReadingAnswer(chosenIndex) {
     recordChallengeResult(firstTry);
     collectGemCluster(pendingCluster);
     closeMathPanel();
-    gameStatus.textContent = firstTry ? "Rätt på första försöket. Bonus!" : "Rätt!";
+    setGameStatusText(firstTry ? "Rätt på första försöket. Bonus!" : "Rätt!", { autoClear: true });
     return;
   }
 
@@ -2102,7 +2131,9 @@ function submitLogicAnswer(chosenOption) {
     resources.rubies += pendingChallenge.reward + firstTryBonus;
     updateResourceCounters();
     closeMathPanel();
-    gameStatus.textContent = firstTry ? "Pixel: Exakt. Du fick bonusrubin!" : "Pixel: Rätt. Rubinerna glöder.";
+    setGameStatusText(firstTry ? "Pixel: Exakt. Du fick bonusrubin!" : "Pixel: Rätt. Rubinerna glöder.", {
+      autoClear: true,
+    });
     saveGame();
     return;
   }
@@ -2229,6 +2260,7 @@ function appendPreviewPart(parent, className) {
 }
 
 function openLabBench() {
+  if (typeof resetMobileInput === "function") resetMobileInput();
   if (gameUI.labOpen) return;
   if (gameUI.pointerLocked && document.exitPointerLock) document.exitPointerLock();
   gameUI.labOpen = true;
@@ -2324,6 +2356,7 @@ function buyBrainrot(itemId) {
 }
 
 function openShop() {
+  if (typeof resetMobileInput === "function") resetMobileInput();
   if (gameUI.shopOpen) return;
   if (gameUI.pointerLocked && document.exitPointerLock) document.exitPointerLock();
   gameUI.shopOpen = true;
@@ -2333,6 +2366,7 @@ function openShop() {
 }
 
 function openInventory() {
+  if (typeof resetMobileInput === "function") resetMobileInput();
   if (gameUI.inventoryOpen) return;
   if (gameUI.pointerLocked && document.exitPointerLock) document.exitPointerLock();
   gameUI.inventoryOpen = true;

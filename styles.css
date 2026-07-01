@@ -1740,6 +1740,10 @@ button[aria-pressed="true"] {
   display: none;
 }
 
+.mobile-controls[hidden] {
+  display: none;
+}
+
 .mobile-joystick,
 .mobile-control-btn {
   touch-action: none;

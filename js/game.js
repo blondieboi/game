@@ -1,6 +1,7 @@
 const gameCanvas = document.querySelector("#game-canvas");
 const pauseOverlay = document.querySelector("#pause-overlay");
 const pauseContinue = document.querySelector("#pause-continue");
+const mobileControls = document.querySelector("#mobile-controls");
 const mobileJoystick = document.querySelector("#mobile-joystick");
 const mobileJoystickThumb = document.querySelector("#mobile-joystick-thumb");
 const mobileAction = document.querySelector("#mobile-action");
@@ -49,11 +50,11 @@ function startGame() {
   gameScreen.hidden = false;
 
   if (!window.THREE) {
-    gameStatus.textContent = "3D-motorn kunde inte laddas. Kontrollera internet och ladda om sidan.";
+    setGameStatusText("3D-motorn kunde inte laddas. Kontrollera internet och ladda om sidan.");
     return;
   }
 
-  gameStatus.textContent = "";
+  setGameStatusText("");
 
   if (!game) {
     game = createGame();
@@ -69,7 +70,7 @@ function startGame() {
   game.running = true;
   game.clock.start();
   game.renderer.setAnimationLoop(updateGame);
-  gameStatus.textContent = "Hitta kristaller. Ställ dig framför dem och svara på frågan.";
+  setGameStatusText("Hitta kristaller. Ställ dig framför dem och svara på frågan.");
   gameCanvas.focus();
   if (shouldUsePointerLock()) {
     acquirePointerLock();
@@ -154,6 +155,10 @@ function updateGame() {
   const move = game.velocity.set(0, 0, 0);
   const speed = 5.2;
 
+  if (mobileInput.active && !canUseMobileMovement()) {
+    resetMobileInput();
+  }
+
   if (mobileInput.active || gameUI.pointerLocked) {
     const forward = new THREE.Vector3();
     game.camera.getWorldDirection(forward);
@@ -233,8 +238,22 @@ function updateGame() {
   gameUI.nearLab = distToLab < labRadius;
   updatePixelPet(delta);
 
-  storePrompt.hidden = !gameUI.nearStore || gameUI.shopOpen || gameUI.labOpen || !mathPanel.hidden || gameUI.inventoryOpen || gameUI.nearLab;
-  labPrompt.hidden = !gameUI.nearLab || gameUI.shopOpen || gameUI.labOpen || !mathPanel.hidden || gameUI.inventoryOpen;
+  const useTouchControls = canUseTouchControls();
+  storePrompt.hidden =
+    useTouchControls ||
+    !gameUI.nearStore ||
+    gameUI.shopOpen ||
+    gameUI.labOpen ||
+    !mathPanel.hidden ||
+    gameUI.inventoryOpen ||
+    gameUI.nearLab;
+  labPrompt.hidden =
+    useTouchControls ||
+    !gameUI.nearLab ||
+    gameUI.shopOpen ||
+    gameUI.labOpen ||
+    !mathPanel.hidden ||
+    gameUI.inventoryOpen;
   updateMobileAction();
 
   const cameraTarget = new THREE.Vector3(
@@ -401,6 +420,16 @@ function updateMobileJoystick(pointerEvent) {
 }
 
 function updateMobileAction() {
+  if (mobileControls) {
+    mobileControls.hidden =
+      gameScreen.hidden ||
+      gameUI.gamePaused ||
+      !mathPanel.hidden ||
+      gameUI.shopOpen ||
+      gameUI.labOpen ||
+      gameUI.inventoryOpen;
+  }
+
   if (!mobileAction) return;
 
   const blocked = gameScreen.hidden || gameUI.gamePaused || !mathPanel.hidden || gameUI.inventoryOpen;
@@ -548,6 +577,25 @@ if (mobileJoystick) {
     resetMobileInput();
   });
 }
+
+document.addEventListener("pointerdown", (event) => {
+  if (!mobileInput.active || !mobileJoystick || mobileJoystick.contains(event.target)) return;
+  resetMobileInput();
+}, true);
+
+document.addEventListener("pointerup", () => {
+  if (mobileInput.active) resetMobileInput();
+});
+
+document.addEventListener("pointercancel", () => {
+  if (mobileInput.active) resetMobileInput();
+});
+
+window.addEventListener("blur", resetMobileInput);
+
+document.addEventListener("visibilitychange", () => {
+  if (document.hidden) resetMobileInput();
+});
 
 if (mobileAction) {
   mobileAction.addEventListener("click", () => {
