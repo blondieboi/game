@@ -1,16 +1,16 @@
-const gameCanvas = document.querySelector("#game-canvas");
-const pauseOverlay = document.querySelector("#pause-overlay");
-const pauseContinue = document.querySelector("#pause-continue");
-const mobileControls = document.querySelector("#mobile-controls");
-const mobileJoystick = document.querySelector("#mobile-joystick");
-const mobileJoystickThumb = document.querySelector("#mobile-joystick-thumb");
-const mobileAction = document.querySelector("#mobile-action");
-const mobileInventory = document.querySelector("#mobile-inventory");
-const mobilePause = document.querySelector("#mobile-pause");
+var gameCanvas = document.querySelector("#game-canvas");
+var pauseOverlay = document.querySelector("#pause-overlay");
+var pauseContinue = document.querySelector("#pause-continue");
+var mobileControls = document.querySelector("#mobile-controls");
+var mobileJoystick = document.querySelector("#mobile-joystick");
+var mobileJoystickThumb = document.querySelector("#mobile-joystick-thumb");
+var mobileAction = document.querySelector("#mobile-action");
+var mobileInventory = document.querySelector("#mobile-inventory");
+var mobilePause = document.querySelector("#mobile-pause");
 
-let game = null;
-const keys = new Set();
-const mobileInput = {
+var game = null;
+var keys = new Set();
+var mobileInput = {
   active: false,
   pointerId: null,
   x: 0,
@@ -99,14 +99,7 @@ function createGame() {
   scene.add(ground);
 
   const trees = [];
-  addTrees(scene, trees);
-  createStore(scene);
-  createProfessorPixelLab(scene);
-  createPath(scene);
-  createPond(scene);
-  createCampfire(scene);
-  createRuins(scene);
-  createDecorations(scene);
+  createWorldObjects(scene, trees);
   const collectibleClusters = [];
 
   return {
@@ -122,6 +115,22 @@ function createGame() {
     pixelPet: null,
     running: false,
     velocity: new THREE.Vector3(),
+    scratch: {
+      forward: new THREE.Vector3(),
+      right: new THREE.Vector3(),
+      newPos: new THREE.Vector3(),
+      xOnly: new THREE.Vector3(),
+      zOnly: new THREE.Vector3(),
+      cameraTarget: new THREE.Vector3(),
+      cameraOffset: new THREE.Vector3(),
+      cameraPosition: new THREE.Vector3(),
+      away: new THREE.Vector3(),
+      petSide: new THREE.Vector3(),
+      petBack: new THREE.Vector3(),
+      petTarget: new THREE.Vector3(),
+      clusterForward: new THREE.Vector3(),
+      toCluster: new THREE.Vector3(),
+    },
   };
 }
 
@@ -156,12 +165,12 @@ function updateGame() {
   }
 
   if (mobileInput.active || gameUI.pointerLocked) {
-    const forward = new THREE.Vector3();
+    const forward = game.scratch.forward.set(0, 0, 0);
     game.camera.getWorldDirection(forward);
     forward.y = 0;
     if (forward.lengthSq() > 0) forward.normalize();
 
-    const right = new THREE.Vector3(1, 0, 0).applyQuaternion(game.camera.quaternion);
+    const right = game.scratch.right.set(1, 0, 0).applyQuaternion(game.camera.quaternion);
     right.y = 0;
     right.normalize();
 
@@ -186,7 +195,7 @@ function updateGame() {
 
   if (hadInput) {
     move.normalize().multiplyScalar(speed * inputStrength * delta);
-    const newPos = new THREE.Vector3(
+    const newPos = game.scratch.newPos.set(
       game.avatar.position.x + move.x,
       game.avatar.position.y,
       game.avatar.position.z + move.z,
@@ -199,8 +208,8 @@ function updateGame() {
     if (!blockedByTree && !blockedByStore && !blockedByLab) {
       game.avatar.position.copy(newPos);
     } else {
-      const xOnly = new THREE.Vector3(newPos.x, game.avatar.position.y, game.avatar.position.z);
-      const zOnly = new THREE.Vector3(game.avatar.position.x, game.avatar.position.y, newPos.z);
+      const xOnly = game.scratch.xOnly.set(newPos.x, game.avatar.position.y, game.avatar.position.z);
+      const zOnly = game.scratch.zOnly.set(game.avatar.position.x, game.avatar.position.y, newPos.z);
       if (!collidesWithTrees(xOnly, game.trees) && !collidesWithStore(xOnly) && !collidesWithLab(xOnly)) {
         game.avatar.position.x = newPos.x;
       }
@@ -252,18 +261,18 @@ function updateGame() {
     gameUI.inventoryOpen;
   updateMobileAction();
 
-  const cameraTarget = new THREE.Vector3(
+  const cameraTarget = game.scratch.cameraTarget.set(
     game.avatar.position.x,
     game.avatar.position.y + PLAYER_HEIGHT + 0.35,
     game.avatar.position.z,
   );
   const angle = game.avatar.rotation.y;
-  const cameraOffset = new THREE.Vector3(
+  const cameraOffset = game.scratch.cameraOffset.set(
     -7.2 * Math.sin(angle),
     4.2,
     -7.2 * Math.cos(angle),
   );
-  game.camera.position.lerp(cameraTarget.clone().add(cameraOffset), 0.08);
+  game.camera.position.lerp(game.scratch.cameraPosition.copy(cameraTarget).add(cameraOffset), 0.08);
   game.camera.lookAt(cameraTarget);
   game.renderer.render(game.scene, game.camera);
 }
@@ -603,9 +612,9 @@ if (mobilePause) {
   });
 }
 
-const pauseBackpack = document.querySelector("#pause-backpack");
-const pauseCustomize = document.querySelector("#pause-customize");
-const pauseQuit = document.querySelector("#pause-quit");
+var pauseBackpack = document.querySelector("#pause-backpack");
+var pauseCustomize = document.querySelector("#pause-customize");
+var pauseQuit = document.querySelector("#pause-quit");
 
 pauseContinue.addEventListener("click", resumeGame);
 

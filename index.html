@@ -11,16 +11,44 @@
   </head>
   <body>
     <section class="title-screen" id="title-screen">
+      <div class="title-scene" aria-hidden="true">
+        <div class="title-sun"></div>
+        <div class="title-cloud title-cloud-one"></div>
+        <div class="title-cloud title-cloud-two"></div>
+        <div class="title-cloud title-cloud-three"></div>
+        <div class="title-hill title-hill-back"></div>
+        <div class="title-hill title-hill-mid"></div>
+        <div class="title-hill title-hill-front"></div>
+        <div class="title-path"></div>
+        <div class="title-tree title-tree-left"></div>
+        <div class="title-tree title-tree-right"></div>
+        <div class="title-portal">
+          <span></span>
+        </div>
+        <div class="title-gem title-gem-emerald"></div>
+        <div class="title-gem title-gem-diamond"></div>
+        <div class="title-gem title-gem-ruby"></div>
+      </div>
+
       <div class="title-content">
-        <p class="eyebrow">Karaktärsverkstan</p>
-        <h1>Välj din upptäckare</h1>
-        <p class="title-sub">Välj en sparad karaktär eller skapa en ny</p>
+        <p class="eyebrow">penky ganes presenterar</p>
+        <h1>Äventyrsverkstan</h1>
+        <p class="title-sub">Bygg din upptäckare, lös kluriga uppdrag och samla skatter.</p>
 
-        <div class="character-list" id="character-list"></div>
+        <div class="title-feature-strip" aria-label="Spelets delar">
+          <span class="title-feature title-feature-create">Skapa</span>
+          <span class="title-feature title-feature-explore">Utforska</span>
+          <span class="title-feature title-feature-think">Klura</span>
+          <span class="title-feature title-feature-collect">Samla</span>
+        </div>
 
-        <button class="new-character-btn" id="new-character-btn" type="button">
-          + Skapa ny karaktär
-        </button>
+        <div class="title-actions">
+          <div class="character-list" id="character-list"></div>
+
+          <button class="new-character-btn" id="new-character-btn" type="button">
+            Skapa ny upptäckare
+          </button>
+        </div>
       </div>
     </section>
 
@@ -161,7 +189,6 @@
           <button class="nav-button nav-next" id="next-step" type="button">Nästa</button>
           <button class="start-button" id="start-game" type="button" hidden>Starta</button>
         </div>
-      </section>
       </section>
     </main>
 

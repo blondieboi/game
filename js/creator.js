@@ -1,33 +1,33 @@
-const character = document.querySelector("#character");
-const worldPreview = document.querySelector("#world-preview");
-const nameplate = document.querySelector("#character-name");
-const nameInput = document.querySelector("#name-input");
-const nameValidation = document.querySelector("#name-validation");
-const hairOptions = document.querySelector("#hair-options");
-const hairColorOptions = document.querySelector("#hair-color-options");
-const skinOptions = document.querySelector("#skin-options");
-const eyeColorOptions = document.querySelector("#eye-color-options");
-const faceOptions = document.querySelector("#face-options");
-const shirtColorOptions = document.querySelector("#shirt-color-options");
-const pantsColorOptions = document.querySelector("#pants-color-options");
-const badgeColorOptions = document.querySelector("#badge-color-options");
-const backgroundOptions = document.querySelector("#background-options");
-const randomizeButton = document.querySelector("#randomize");
-const startGameButton = document.querySelector("#start-game");
-const newCharacterBtn = document.querySelector("#new-character-btn");
-const prevStepButton = document.querySelector("#prev-step");
-const nextStepButton = document.querySelector("#next-step");
-const previewRotation = document.querySelector("#preview-rotation");
-const avatarPreviewCanvas = document.querySelector("#avatar-preview-canvas");
-const stepDots = document.querySelectorAll("#step-dots .step-dot");
-const stepLabel = document.querySelector("#step-label");
-const stepPanels = document.querySelectorAll(".step-panel");
-let currentStep = 0;
-let avatarPreviewRenderer = null;
-let avatarPreviewScene = null;
-let avatarPreviewCamera = null;
-let avatarPreviewRoot = null;
-let avatarPreviewAngle = 0;
+var character = document.querySelector("#character");
+var worldPreview = document.querySelector("#world-preview");
+var nameplate = document.querySelector("#character-name");
+var nameInput = document.querySelector("#name-input");
+var nameValidation = document.querySelector("#name-validation");
+var hairOptions = document.querySelector("#hair-options");
+var hairColorOptions = document.querySelector("#hair-color-options");
+var skinOptions = document.querySelector("#skin-options");
+var eyeColorOptions = document.querySelector("#eye-color-options");
+var faceOptions = document.querySelector("#face-options");
+var shirtColorOptions = document.querySelector("#shirt-color-options");
+var pantsColorOptions = document.querySelector("#pants-color-options");
+var badgeColorOptions = document.querySelector("#badge-color-options");
+var backgroundOptions = document.querySelector("#background-options");
+var randomizeButton = document.querySelector("#randomize");
+var startGameButton = document.querySelector("#start-game");
+var newCharacterBtn = document.querySelector("#new-character-btn");
+var prevStepButton = document.querySelector("#prev-step");
+var nextStepButton = document.querySelector("#next-step");
+var previewRotation = document.querySelector("#preview-rotation");
+var avatarPreviewCanvas = document.querySelector("#avatar-preview-canvas");
+var stepDots = document.querySelectorAll("#step-dots .step-dot");
+var stepLabel = document.querySelector("#step-label");
+var stepPanels = document.querySelectorAll(".step-panel");
+var currentStep = 0;
+var avatarPreviewRenderer = null;
+var avatarPreviewScene = null;
+var avatarPreviewCamera = null;
+var avatarPreviewRoot = null;
+var avatarPreviewAngle = 0;
 
 function showTitle() {
   titleScreen.hidden = false;
@@ -70,13 +70,34 @@ function normalizeChoice(type, className) {
   return DEFAULT_CHARACTER_STATE[type];
 }
 
-function setChoice(type, className) {
+function choiceTarget(type) {
+  return type === "background" ? worldPreview : character;
+}
+
+function applyCharacterChoice(type, className) {
+  if (!choices[type]) return false;
   const nextClassName = normalizeChoice(type, className);
-  const target = type === "background" ? worldPreview : character;
+  const target = choiceTarget(type);
   choices[type].forEach((choice) => target.classList.remove(choice.className));
   Object.keys(legacyChoiceMap[type] || {}).forEach((legacyClassName) => target.classList.remove(legacyClassName));
   target.classList.add(nextClassName);
   characterState[type] = nextClassName;
+  return true;
+}
+
+function applyCharacterChoices(state) {
+  const source = {
+    ...DEFAULT_CHARACTER_STATE,
+    ...(state || {}),
+  };
+  Object.entries(source).forEach(([type, className]) => {
+    applyCharacterChoice(type, className);
+  });
+  return source;
+}
+
+function setChoice(type, className) {
+  if (!applyCharacterChoice(type, className)) return;
   updatePressedStates(type);
   rebuildAvatarPreview();
   saveGame();
@@ -176,29 +197,11 @@ function randomizeCharacter() {
 }
 
 function resetToDefaults() {
-  const defaults = {
-    hair: "hair-wavy",
-    hairColor: "hair-brown",
-    skin: "skin-medium",
-    eyes: "eyes-black",
-    face: "face-smile",
-    shirtColor: "shirt-blue",
-    pantsColor: "pants-green",
-    badgeColor: "badge-orange",
-    background: "background-sunny",
-  };
-  Object.entries(defaults).forEach(([type, className]) => {
-    if (!choices[type]) return;
-    const target = type === "background" ? worldPreview : character;
-    choices[type].forEach((c) => target.classList.remove(c.className));
-    Object.keys(legacyChoiceMap[type] || {}).forEach((legacyClassName) => target.classList.remove(legacyClassName));
-    target.classList.add(className);
-    characterState[type] = className;
-  });
+  applyCharacterChoices(DEFAULT_CHARACTER_STATE);
   nameInput.value = "";
   nameValidation.textContent = "";
   syncName();
-  Object.keys(defaults).forEach((type) => {
+  Object.keys(DEFAULT_CHARACTER_STATE).forEach((type) => {
     if (choices[type]) updatePressedStates(type);
   });
   rebuildAvatarPreview();
@@ -304,16 +307,7 @@ function deleteCharacter(name) {
 
 function loadCharacter(name, charData) {
   setCurrentCharacter(name);
-  const s = charData.state;
-  Object.entries(s).forEach(([type, className]) => {
-    if (!choices[type]) return;
-    const nextClassName = normalizeChoice(type, className);
-    const target = type === "background" ? worldPreview : character;
-    choices[type].forEach((c) => target.classList.remove(c.className));
-    Object.keys(legacyChoiceMap[type] || {}).forEach((legacyClassName) => target.classList.remove(legacyClassName));
-    target.classList.add(nextClassName);
-    characterState[type] = nextClassName;
-  });
+  const s = applyCharacterChoices(charData.state);
   nameInput.value = name;
   syncName();
   resources.emeralds = charData.emeralds || 0;

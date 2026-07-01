@@ -1,44 +1,47 @@
-const mathReward = document.querySelector("#math-reward");
-const mathQuestion = document.querySelector("#math-question");
-const mathAnswer = document.querySelector("#math-answer");
-const mathFeedback = document.querySelector("#math-feedback");
-const mathVisual = document.querySelector("#math-visual");
-const mathClose = document.querySelector("#math-close");
-const mathForm = document.querySelector("#math-form");
-const readingForm = document.querySelector("#reading-form");
-const readingPassage = document.querySelector("#reading-passage");
-const readingQuestion = document.querySelector("#reading-question");
-const readingChoices = document.querySelector("#reading-choices");
-const logicForm = document.querySelector("#logic-form");
-const logicTitle = document.querySelector("#logic-title");
-const logicPromptText = document.querySelector("#logic-prompt-text");
-const logicMachine = document.querySelector("#logic-machine");
-const logicChoices = document.querySelector("#logic-choices");
-const shopPanel = document.querySelector("#shop-panel");
-const shopClose = document.querySelector("#shop-close");
-const shopItems = document.querySelector("#shop-items");
-const labPanel = document.querySelector("#lab-panel");
-const labClose = document.querySelector("#lab-close");
-const labStartTest = document.querySelector("#lab-start-test");
-const labItems = document.querySelector("#lab-items");
-const inventoryPanel = document.querySelector("#inventory-panel");
-const inventoryClose = document.querySelector("#inventory-close");
-const inventoryItems = document.querySelector("#inventory-items");
-const emeraldCounter = document.querySelector("#emerald-counter");
-const diamondCounter = document.querySelector("#diamond-counter");
-const rubyCounter = document.querySelector("#ruby-counter");
+var mathReward = document.querySelector("#math-reward");
+var mathQuestion = document.querySelector("#math-question");
+var mathAnswer = document.querySelector("#math-answer");
+var mathFeedback = document.querySelector("#math-feedback");
+var mathVisual = document.querySelector("#math-visual");
+var mathClose = document.querySelector("#math-close");
+var mathForm = document.querySelector("#math-form");
+var readingForm = document.querySelector("#reading-form");
+var readingPassage = document.querySelector("#reading-passage");
+var readingQuestion = document.querySelector("#reading-question");
+var readingChoices = document.querySelector("#reading-choices");
+var logicForm = document.querySelector("#logic-form");
+var logicTitle = document.querySelector("#logic-title");
+var logicPromptText = document.querySelector("#logic-prompt-text");
+var logicMachine = document.querySelector("#logic-machine");
+var logicChoices = document.querySelector("#logic-choices");
+var shopPanel = document.querySelector("#shop-panel");
+var shopClose = document.querySelector("#shop-close");
+var shopItems = document.querySelector("#shop-items");
+var labPanel = document.querySelector("#lab-panel");
+var labClose = document.querySelector("#lab-close");
+var labStartTest = document.querySelector("#lab-start-test");
+var labItems = document.querySelector("#lab-items");
+var inventoryPanel = document.querySelector("#inventory-panel");
+var inventoryClose = document.querySelector("#inventory-close");
+var inventoryItems = document.querySelector("#inventory-items");
+var emeraldCounter = document.querySelector("#emerald-counter");
+var diamondCounter = document.querySelector("#diamond-counter");
+var rubyCounter = document.querySelector("#ruby-counter");
+var emeraldCounterValue = emeraldCounter.querySelector(".counter-value");
+var diamondCounterValue = diamondCounter.querySelector(".counter-value");
+var rubyCounterValue = rubyCounter.querySelector(".counter-value");
 
-let g = null;
+var g = null;
 
 function setGameRef(gameRef) {
   g = gameRef;
 }
 
-let activeProblem = null;
-let pendingCluster = null;
-let currentReadingProblem = null;
-let currentLogicProblem = null;
-let pendingChallenge = null;
+var activeProblem = null;
+var pendingCluster = null;
+var currentReadingProblem = null;
+var currentLogicProblem = null;
+var pendingChallenge = null;
 var gameStatusClearTimer = null;
 var GAME_STATUS_CLEAR_DELAY = 4000;
 
@@ -71,7 +74,7 @@ function closeMathPanel({ restoreCluster = false } = {}) {
   if (typeof resetMobileInput === "function") resetMobileInput();
   if (restoreCluster && pendingCluster && g) {
     pendingCluster.userData.available = true;
-    const away = new THREE.Vector3(
+    const away = g.scratch.away.set(
       g.avatar.position.x - pendingCluster.position.x,
       0,
       g.avatar.position.z - pendingCluster.position.z,
@@ -137,9 +140,9 @@ function autoLockPointer() {
 }
 
 function updateResourceCounters() {
-  emeraldCounter.querySelector(".counter-value").textContent = resources.emeralds;
-  diamondCounter.querySelector(".counter-value").textContent = resources.diamonds;
-  rubyCounter.querySelector(".counter-value").textContent = resources.rubies;
+  emeraldCounterValue.textContent = resources.emeralds;
+  diamondCounterValue.textContent = resources.diamonds;
+  rubyCounterValue.textContent = resources.rubies;
 }
 
 function distance2D(a, b) {
@@ -279,6 +282,17 @@ function ellipsoid(radius, mat, x, y, z, sx, sy, sz) {
   const mesh = sphere(radius, mat, x, y, z);
   mesh.scale.set(sx, sy, sz);
   return mesh;
+}
+
+function createWorldObjects(scene, trees) {
+  addTrees(scene, trees);
+  createStore(scene);
+  createProfessorPixelLab(scene);
+  createPath(scene);
+  createPond(scene);
+  createCampfire(scene);
+  createRuins(scene);
+  createDecorations(scene);
 }
 
 function addTrees(scene, trees) {
@@ -1198,9 +1212,12 @@ function updatePixelPet(delta) {
   }
   if (!g.pixelPet) return;
 
-  const side = new THREE.Vector3(-Math.cos(g.avatar.rotation.y), 0, Math.sin(g.avatar.rotation.y));
-  const back = new THREE.Vector3(-Math.sin(g.avatar.rotation.y), 0, -Math.cos(g.avatar.rotation.y));
-  const target = g.avatar.position.clone().add(side.multiplyScalar(0.8)).add(back.multiplyScalar(0.95));
+  const side = g.scratch.petSide.set(-Math.cos(g.avatar.rotation.y), 0, Math.sin(g.avatar.rotation.y));
+  const back = g.scratch.petBack.set(-Math.sin(g.avatar.rotation.y), 0, -Math.cos(g.avatar.rotation.y));
+  const target = g.scratch.petTarget
+    .copy(g.avatar.position)
+    .add(side.multiplyScalar(0.8))
+    .add(back.multiplyScalar(0.95));
   target.y = getTerrainHeight(target.x, target.z) + 0.68 + Math.sin(g.clock.elapsedTime * 3.4) * 0.08;
   g.pixelPet.position.lerp(target, Math.min(delta * 5.5, 1));
   g.pixelPet.rotation.y += delta * 1.8;
@@ -1639,13 +1656,13 @@ function checkForCollectibleChallenge() {
 
 function findFacingCluster() {
   const avatar = g.avatar;
-  const forward = new THREE.Vector3(Math.sin(avatar.rotation.y), 0, Math.cos(avatar.rotation.y));
+  const forward = g.scratch.clusterForward.set(Math.sin(avatar.rotation.y), 0, Math.cos(avatar.rotation.y));
 
   return (
     g.collectibleClusters.find((cluster) => {
       if (!cluster.userData.available) return false;
 
-      const toCluster = new THREE.Vector3(
+      const toCluster = g.scratch.toCluster.set(
         cluster.position.x - avatar.position.x,
         0,
         cluster.position.z - avatar.position.z,
@@ -2405,10 +2422,13 @@ function renderShop() {
 
     const price = document.createElement("span");
     price.className = "shop-item-price";
-    const parts = [];
-    if (item.emeraldCost > 0) parts.push(`<span class="price-emerald">${item.emeraldCost}★</span>`);
-    if (item.diamondCost > 0) parts.push(`<span class="price-diamond">${item.diamondCost}♦</span>`);
-    price.innerHTML = parts.join(" ");
+    if (item.emeraldCost > 0) {
+      price.appendChild(createPricePart('price-emerald', `${item.emeraldCost}★`));
+    }
+    if (item.diamondCost > 0) {
+      if (price.childNodes.length > 0) price.appendChild(document.createTextNode(' '));
+      price.appendChild(createPricePart('price-diamond', `${item.diamondCost}♦`));
+    }
 
     const btn = document.createElement("button");
     btn.className = "buy-btn";
@@ -2430,6 +2450,13 @@ function renderShop() {
     card.appendChild(actions);
     shopItems.appendChild(card);
   });
+}
+
+function createPricePart(className, text) {
+  const part = document.createElement("span");
+  part.className = className;
+  part.textContent = text;
+  return part;
 }
 
 function buyBrainrot(itemId) {
