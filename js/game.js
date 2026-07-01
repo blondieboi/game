@@ -16,10 +16,6 @@ const mobileInput = {
   x: 0,
   z: 0,
   force: 0,
-  forwardX: 0,
-  forwardZ: 1,
-  rightX: 1,
-  rightZ: 0,
 };
 
 function stopGame() {
@@ -170,8 +166,8 @@ function updateGame() {
     right.normalize();
 
     if (mobileInput.active) {
-      move.x += mobileInput.forwardX * mobileInput.z + mobileInput.rightX * mobileInput.x;
-      move.z += mobileInput.forwardZ * mobileInput.z + mobileInput.rightZ * mobileInput.x;
+      move.addScaledVector(forward, mobileInput.z);
+      move.addScaledVector(right, mobileInput.x);
     } else {
       if (keys.has("KeyW")) move.add(forward);
       if (keys.has("KeyS")) move.sub(forward);
@@ -358,31 +354,9 @@ function resetMobileInput() {
   mobileInput.x = 0;
   mobileInput.z = 0;
   mobileInput.force = 0;
-  mobileInput.forwardX = 0;
-  mobileInput.forwardZ = 1;
-  mobileInput.rightX = 1;
-  mobileInput.rightZ = 0;
   if (mobileJoystickThumb) {
     mobileJoystickThumb.style.transform = "translate(-50%, -50%)";
   }
-}
-
-function captureMobileMoveBasis() {
-  if (!game || !game.camera) return;
-
-  const forward = new THREE.Vector3();
-  game.camera.getWorldDirection(forward);
-  forward.y = 0;
-  if (forward.lengthSq() > 0) forward.normalize();
-
-  const right = new THREE.Vector3(1, 0, 0).applyQuaternion(game.camera.quaternion);
-  right.y = 0;
-  if (right.lengthSq() > 0) right.normalize();
-
-  mobileInput.forwardX = forward.x;
-  mobileInput.forwardZ = forward.z;
-  mobileInput.rightX = right.x;
-  mobileInput.rightZ = right.z;
 }
 
 function updateMobileJoystick(pointerEvent) {
@@ -549,7 +523,6 @@ if (mobileJoystick) {
   mobileJoystick.addEventListener("pointerdown", (event) => {
     if (!canUseMobileMovement()) return;
     mobileInput.pointerId = event.pointerId;
-    captureMobileMoveBasis();
     mobileJoystick.setPointerCapture(event.pointerId);
     updateMobileJoystick(event);
     event.preventDefault();
