@@ -1246,6 +1246,7 @@ function createFallbackAvatarVisual() {
   var pantsMat = toonMat(colorLookup[characterState.pantsColor] || '#43a047');
   var hairMat = toonMat(colorLookup[characterState.hairColor] || '#4b2d1c');
   var eyeMat = toonMat(colorLookup[characterState.eyes] || '#17212b');
+  var mouthMat = toonMat('#7d2b36');
   var badgeMat = toonMat(colorLookup[characterState.badgeColor] || '#fb8c00');
   var shoeMat = toonMat('#1a1f29');
 
@@ -1272,7 +1273,7 @@ function createFallbackAvatarVisual() {
   group.add(ellipsoid(0.055, skinMat, -0.25, 1.69, 0, 0.65, 1, 0.45));
   group.add(ellipsoid(0.055, skinMat, 0.25, 1.69, 0, 0.65, 1, 0.45));
   addFallbackHair(group, hairMat);
-  addFallbackFace(group, skinMat, eyeMat);
+  addFallbackFace(group, skinMat, eyeMat, mouthMat);
   addFallbackBadge(group, badgeMat, trimMat);
   group.traverse(function (child) {
     if (child.isMesh) {
@@ -1410,9 +1411,10 @@ function addFallbackHair(group, hairMat) {
   group.add(ellipsoid(0.065, hairMat, -0.18, 1.78, 0.12, 0.8, 1.1, 0.65));
 }
 
-function addFallbackFace(group, skinMat, eyeMat) {
+function addFallbackFace(group, skinMat, eyeMat, mouthMat) {
   var blushMat = toonMat('#ec8d83');
   var shineMat = toonMat('#fffaf2');
+  var maskLightMat = toonMat('#f4f7fb');
 
   group.add(ellipsoid(0.032, skinMat, 0, 1.66, 0.28, 0.75, 0.9, 1.15));
   group.add(ellipsoid(0.024, blushMat, -0.15, 1.64, 0.265, 1.35, 0.55, 0.28));
@@ -1421,7 +1423,7 @@ function addFallbackFace(group, skinMat, eyeMat) {
   if (characterState.face === 'face-apoc') {
     group.add(ellipsoid(0.035, eyeMat, -0.1, 1.71, 0.25, 0.8, 1.05, 0.55));
     group.add(ellipsoid(0.035, eyeMat, 0.1, 1.71, 0.25, 0.8, 1.05, 0.55));
-    group.add(box(0.32, 0.12, 0.035, eyeMat, 0, 1.64, 0.3));
+    group.add(box(0.32, 0.12, 0.035, maskLightMat, 0, 1.64, 0.3));
     group.add(box(0.09, 0.035, 0.04, skinMat, -0.08, 1.65, 0.32));
     group.add(box(0.09, 0.035, 0.04, skinMat, 0.08, 1.65, 0.32));
     return;
@@ -1430,7 +1432,7 @@ function addFallbackFace(group, skinMat, eyeMat) {
   if (characterState.face === 'face-calm') {
     group.add(box(0.2, 0.025, 0.025, eyeMat, -0.1, 1.71, 0.27));
     group.add(box(0.2, 0.025, 0.025, eyeMat, 0.1, 1.71, 0.27));
-    group.add(box(0.16, 0.022, 0.025, eyeMat, 0, 1.59, 0.28));
+    group.add(box(0.16, 0.022, 0.025, mouthMat, 0, 1.59, 0.28));
     return;
   }
 
@@ -1442,15 +1444,15 @@ function addFallbackFace(group, skinMat, eyeMat) {
   group.add(ellipsoid(0.026, eyeMat, 0.1, 1.765, 0.235, 1.35, 0.32, 0.26));
 
   if (characterState.face === 'face-focus') {
-    group.add(box(0.22, 0.025, 0.025, eyeMat, 0, 1.59, 0.28));
+    group.add(box(0.22, 0.025, 0.025, mouthMat, 0, 1.59, 0.28));
     group.add(ellipsoid(0.035, eyeMat, -0.15, 1.76, 0.24, 1.1, 0.45, 0.35));
     group.add(ellipsoid(0.035, eyeMat, 0.15, 1.76, 0.24, 1.1, 0.45, 0.35));
     return;
   }
 
-  group.add(ellipsoid(0.018, eyeMat, -0.055, 1.6, 0.252, 1.15, 0.48, 0.24));
-  group.add(ellipsoid(0.018, eyeMat, 0, 1.58, 0.258, 1.25, 0.48, 0.22));
-  group.add(ellipsoid(0.018, eyeMat, 0.055, 1.6, 0.252, 1.15, 0.48, 0.24));
+  group.add(ellipsoid(0.018, mouthMat, -0.055, 1.6, 0.252, 1.15, 0.48, 0.24));
+  group.add(ellipsoid(0.018, mouthMat, 0, 1.58, 0.258, 1.25, 0.48, 0.22));
+  group.add(ellipsoid(0.018, mouthMat, 0.055, 1.6, 0.252, 1.15, 0.48, 0.24));
 }
 
 function addFallbackBadge(group, badgeMat, trimMat) {
