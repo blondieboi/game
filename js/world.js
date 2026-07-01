@@ -2211,9 +2211,8 @@ function renderLabBench() {
     const btn = document.createElement("button");
     btn.className = "buy-btn lab-buy-btn";
     if (owned) {
-      btn.textContent = activePixelPet === item.id ? "Aktiv" : "Välj";
-      btn.disabled = activePixelPet === item.id;
-      btn.addEventListener("click", () => equipPixelPet(item.id));
+      btn.textContent = "Byggd";
+      btn.disabled = true;
     } else {
       btn.textContent = "Bygg";
       btn.disabled = !canAfford;
@@ -2279,7 +2278,6 @@ function buyPixelPet(itemId) {
   if (!item || ownedPixelPets.has(itemId) || resources.rubies < item.rubyCost) return;
   resources.rubies -= item.rubyCost;
   ownedPixelPets.add(itemId);
-  equipPixelPet(itemId, false);
   updateResourceCounters();
   renderLabBench();
   saveGame();
@@ -2291,6 +2289,14 @@ function equipPixelPet(itemId, shouldSave = true) {
   syncPixelPet();
   renderLabBench();
   if (shouldSave) saveGame();
+}
+
+function unequipPixelPet() {
+  if (!activePixelPet) return;
+  activePixelPet = null;
+  syncPixelPet();
+  renderInventoryItems();
+  saveGame();
 }
 
 function renderShop() {
@@ -2503,9 +2509,10 @@ function renderInventoryItems() {
 
         const button = document.createElement("button");
         button.className = "buy-btn companion-equip-btn";
-        button.textContent = active ? "Aktiv" : "Aktivera";
-        button.disabled = active;
-        if (!active) {
+        button.textContent = active ? "Ta av" : "Aktivera";
+        if (active) {
+          button.addEventListener("click", unequipPixelPet);
+        } else {
           button.addEventListener("click", () => {
             equipPixelPet(item.id);
             renderInventoryItems();

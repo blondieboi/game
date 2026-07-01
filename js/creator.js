@@ -321,7 +321,7 @@ function loadCharacter(name, charData) {
   (charData.ownedBrainrots || []).forEach((id) => ownedBrainrots.add(id));
   ownedPixelPets.clear();
   (charData.ownedPixelPets || []).forEach((id) => ownedPixelPets.add(id));
-  activePixelPet = ownedPixelPets.has(charData.activePixelPet) ? charData.activePixelPet : (ownedPixelPets.size > 0 ? [...ownedPixelPets][0] : null);
+  activePixelPet = ownedPixelPets.has(charData.activePixelPet) ? charData.activePixelPet : null;
   safeSetLearningProgress(charData.learningProgress);
   Object.keys(s).forEach((type) => {
     if (choices[type]) updatePressedStates(type);
