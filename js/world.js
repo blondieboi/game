@@ -1875,8 +1875,8 @@ function makeMathProblems(level) {
     return problems;
   }
 
-  [2, 5, 10].forEach((groupSize) => {
-    for (let groups = 2; groups <= 5; groups += 1) {
+  [2, 3, 4, 5, 10].forEach((groupSize) => {
+    for (let groups = 2; groups <= 10; groups += 1) {
       problems.push({
         id: `math-4-groups-${groups}-${groupSize}`,
         left: groups,
@@ -1885,6 +1885,20 @@ function makeMathProblems(level) {
         answer: groups * groupSize,
         level,
         prompt: "Räkna grupperna:",
+      });
+    }
+  });
+  [2, 3, 4, 5, 10].forEach((groupSize) => {
+    for (let groups = 2; groups <= 10; groups += 1) {
+      problems.push({
+        id: `math-4-missing-${groups}-${groupSize}`,
+        left: "?",
+        right: groupSize,
+        operator: "×",
+        answer: groups,
+        target: groups * groupSize,
+        level,
+        prompt: "Vilket tal saknas?",
       });
     }
   });
@@ -1919,6 +1933,90 @@ function makeReadingProblem(level) {
         options: ["En macka och ett äpple", "En boll och en sko", "En sten och en pinne"],
         answer: 0,
       },
+      {
+        id: "reading-1-ida-boll",
+        passage: "Ida sparkar en röd boll på gården. Bollen rullar till bänken.",
+        question: "Vilken färg har bollen?",
+        options: ["Röd", "Grön", "Svart"],
+        answer: 0,
+      },
+      {
+        id: "reading-1-max-bok",
+        passage: "Max läser en bok om rymden. Han sitter i soffan.",
+        question: "Vad läser Max om?",
+        options: ["Rymden", "Havet", "Skogen"],
+        answer: 0,
+      },
+      {
+        id: "reading-1-alva-kaka",
+        passage: "Alva bakar en kaka med sin farmor. Kakan luktar gott.",
+        question: "Vad bakar Alva?",
+        options: ["En kaka", "En soppa", "En pizza"],
+        answer: 0,
+      },
+      {
+        id: "reading-1-tage-cykel",
+        passage: "Tage cyklar till skolan. Han har en blå hjälm.",
+        question: "Vad har Tage på huvudet?",
+        options: ["En blå hjälm", "En gul krona", "En röd keps"],
+        answer: 0,
+      },
+      {
+        id: "reading-1-liv-hund",
+        passage: "Liv går ut med sin hund. Hunden heter Bosse.",
+        question: "Vad heter hunden?",
+        options: ["Bosse", "Milo", "Sally"],
+        answer: 0,
+      },
+      {
+        id: "reading-1-noel-sten",
+        passage: "Noel hittar en blank sten vid sjön. Han lägger stenen i fickan.",
+        question: "Var hittar Noel stenen?",
+        options: ["Vid sjön", "I köket", "På taket"],
+        answer: 0,
+      },
+      {
+        id: "reading-1-ella-lampa",
+        passage: "Ella tänder lampan i rummet. Nu kan hon se sina pennor.",
+        question: "Vad tänder Ella?",
+        options: ["Lampan", "Spisen", "Radion"],
+        answer: 0,
+      },
+      {
+        id: "reading-1-axel-batar",
+        passage: "Axel ser två båtar på vattnet. Den ena båten är vit.",
+        question: "Hur många båtar ser Axel?",
+        options: ["Två", "Fyra", "Sex"],
+        answer: 0,
+      },
+      {
+        id: "reading-1-saga-morot",
+        passage: "Saga ger en morot till kaninen. Kaninen tuggar snabbt.",
+        question: "Vad får kaninen?",
+        options: ["En morot", "Ett päron", "En pinne"],
+        answer: 0,
+      },
+      {
+        id: "reading-1-milo-sand",
+        passage: "Milo bygger ett torn av sand. Tornet står nära hinken.",
+        question: "Vad bygger Milo?",
+        options: ["Ett torn", "En bro", "Ett hus av trä"],
+        answer: 0,
+      },
+      {
+        id: "reading-1-freja-snosre",
+        passage: "Freja knyter sitt skosnöre innan hon springer.",
+        question: "Vad knyter Freja?",
+        options: ["Sitt skosnöre", "Sin halsduk", "Sin väska"],
+        answer: 0,
+      },
+      {
+        id: "reading-1-oliver-sang",
+        passage: "Oliver sjunger en sång för sin lillebror. Lillebror ler.",
+        question: "Vad gör Oliver?",
+        options: ["Sjunger en sång", "Målar en dörr", "Sover i soffan"],
+        answer: 0,
+      },
     ];
     return pickUnansweredProblem("reading", simpleQuestions);
   }
@@ -1946,6 +2044,90 @@ function makeReadingProblem(level) {
         options: ["På den största stenen", "I ryggsäcken", "Under bron"],
         answer: 0,
       },
+      {
+        id: "reading-3-mina-bro",
+        passage: "Mina såg att bron var trasig. Hon gick runt sjön och hittade en liten spång. Sedan kunde hon fortsätta till tornet.",
+        question: "Vad gjorde Mina efter att hon såg den trasiga bron?",
+        options: ["Hon gick runt sjön", "Hon simmade över", "Hon klättrade i tornet"],
+        answer: 0,
+      },
+      {
+        id: "reading-3-viggo-fron",
+        passage: "Viggo lade tre frön i jorden. Han täckte dem med jord och vattnade försiktigt. Efter några dagar kom små gröna blad upp.",
+        question: "Vad gjorde Viggo direkt efter att han lade fröna i jorden?",
+        options: ["Han täckte dem med jord", "Han plockade bladen", "Han målade krukan"],
+        answer: 0,
+      },
+      {
+        id: "reading-3-ebba-lykta",
+        passage: "Ebba tände sin lykta när grottan blev mörk. Hon såg fotspår i sanden och följde dem till en dörr.",
+        question: "Varför tände Ebba lyktan?",
+        options: ["För att grottan blev mörk", "För att dörren var öppen", "För att sanden var varm"],
+        answer: 0,
+      },
+      {
+        id: "reading-3-jon-ryggsack",
+        passage: "Jon packade vatten, karta och kompass. När stigen delade sig tog han fram kartan och valde vägen mot berget.",
+        question: "Vad använde Jon när stigen delade sig?",
+        options: ["Kartan", "Vattnet", "En blomma"],
+        answer: 0,
+      },
+      {
+        id: "reading-3-siri-brev",
+        passage: "Siri hittade ett brev under mattan. På brevet stod det: 'Gå till brunnen.' Siri sprang till brunnen och hittade en ny ledtråd.",
+        question: "Vart gick Siri efter att hon läste brevet?",
+        options: ["Till brunnen", "Till köket", "Till stranden"],
+        answer: 0,
+      },
+      {
+        id: "reading-3-oskar-klocka",
+        passage: "Oskar skulle möta sin vän klockan tre. När klockan blev halv tre tog han på sig jackan och gick mot torget.",
+        question: "Varför gick Oskar mot torget?",
+        options: ["För att möta sin vän", "För att köpa glass", "För att leta efter jackan"],
+        answer: 0,
+      },
+      {
+        id: "reading-3-maja-stegen",
+        passage: "Maja såg ett äpple högt upp i trädet. Hon hämtade en stege, klättrade upp och plockade äpplet.",
+        question: "Vad gjorde Maja innan hon klättrade upp?",
+        options: ["Hon hämtade en stege", "Hon åt äpplet", "Hon målade trädet"],
+        answer: 0,
+      },
+      {
+        id: "reading-3-hugo-spar",
+        passage: "Hugo följde små spår i snön. Spåren gick förbi staketet och slutade vid en sovande katt.",
+        question: "Var slutade spåren?",
+        options: ["Vid en sovande katt", "Vid en cykel", "Vid en brasa"],
+        answer: 0,
+      },
+      {
+        id: "reading-3-tuva-marknad",
+        passage: "Tuva hade fem mynt. Hon köpte ett päron för två mynt och en bulle för ett mynt. Sedan hade hon två mynt kvar.",
+        question: "Vad köpte Tuva först?",
+        options: ["Ett päron", "En bulle", "En mössa"],
+        answer: 0,
+      },
+      {
+        id: "reading-3-nils-fackla",
+        passage: "Nils bar en fackla genom tunneln. När vinden blåste ut lågan stannade han och tände den igen med en tändsticka.",
+        question: "Vad gjorde Nils när lågan slocknade?",
+        options: ["Han tände den igen", "Han kastade facklan", "Han sprang hem"],
+        answer: 0,
+      },
+      {
+        id: "reading-3-ruth-damm",
+        passage: "Ruth såg att dammen var nästan tom. Hon öppnade kranen vid bäcken och väntade tills vattnet steg.",
+        question: "Vad hände efter att Ruth öppnade kranen?",
+        options: ["Vattnet steg", "Dammen frös", "Bäcken försvann"],
+        answer: 0,
+      },
+      {
+        id: "reading-3-adam-stjarna",
+        passage: "Adam ritade en karta med tre märken: en måne, en stjärna och en sol. Skatten låg vid märket som såg ut som en stjärna.",
+        question: "Vilket märke visade var skatten låg?",
+        options: ["Stjärnan", "Månen", "Solen"],
+        answer: 0,
+      },
     ];
     return pickUnansweredProblem("reading", sequenceQuestions);
   }
@@ -1971,6 +2153,90 @@ function makeReadingProblem(level) {
         passage: "En liten nyckel låg bredvid den låsta kistan. På kistan fanns samma stjärna som på nyckeln. Sara log och plockade upp nyckeln.",
         question: "Varför log Sara?",
         options: ["Hon trodde att nyckeln passade", "Hon ville kasta nyckeln", "Hon hittade sin mössa"],
+        answer: 0,
+      },
+      {
+        id: "reading-4-teo-fonster",
+        passage: "Teo såg att fönstret stod öppet och att pappren låg utspridda över golvet. Han stängde fönstret innan han samlade ihop pappren.",
+        question: "Vad trodde Teo troligen hade hänt?",
+        options: ["Vinden hade blåst in", "Någon hade målat pappren", "Golvet hade blivit varmt"],
+        answer: 0,
+      },
+      {
+        id: "reading-4-hanna-skor",
+        passage: "Hannas skor var leriga när hon kom in. Ute på gården fanns stora vattenpölar efter nattens oväder.",
+        question: "Varför var Hannas skor leriga?",
+        options: ["Hon hade gått ute efter regnet", "Hon hade bakat bröd", "Hon hade suttit i soffan"],
+        answer: 0,
+      },
+      {
+        id: "reading-4-ali-ljud",
+        passage: "Ali hörde ett svagt pip från skåpet. När han öppnade dörren låg hans lilla robot där med blinkande batterilampa.",
+        question: "Varför pep det från skåpet?",
+        options: ["Robotens batteri var svagt", "Skåpet sjöng", "Dörren var målad"],
+        answer: 0,
+      },
+      {
+        id: "reading-4-nova-kaka",
+        passage: "Nova lade kakorna högt upp på hyllan. När hon kom tillbaka stod en stol bredvid hyllan och burken var tom.",
+        question: "Vad kan Nova ana?",
+        options: ["Någon använde stolen för att nå kakorna", "Kakorna blev till stenar", "Hyllan blev högre"],
+        answer: 0,
+      },
+      {
+        id: "reading-4-melker-kompass",
+        passage: "Melker såg att kompassen pekade åt norr. Han vände kartan så att norr på kartan låg åt samma håll och började gå.",
+        question: "Varför vände Melker kartan?",
+        options: ["För att lättare hitta rätt riktning", "För att kartan var blöt", "För att kompassen var tung"],
+        answer: 0,
+      },
+      {
+        id: "reading-4-signe-lampa",
+        passage: "Signe tryckte på lampknappen men inget hände. Hon såg att sladden inte satt i väggen och kröp ner bakom bordet.",
+        question: "Vad tänkte Signe troligen göra?",
+        options: ["Sätta i sladden", "Rita på bordet", "Byta skor"],
+        answer: 0,
+      },
+      {
+        id: "reading-4-loke-fisk",
+        passage: "Loke såg ringar på vattenytan och små bubblor nära bryggan. Han tog fram sitt metspö och satte sig tyst.",
+        question: "Vad trodde Loke troligen?",
+        options: ["Att det fanns fisk nära bryggan", "Att bryggan skulle flyga", "Att vattnet var tomt"],
+        answer: 0,
+      },
+      {
+        id: "reading-4-juni-halsduk",
+        passage: "Juni såg frost på gräset när hon öppnade dörren. Hon gick tillbaka in och hämtade sin tjocka halsduk.",
+        question: "Varför hämtade Juni halsduken?",
+        options: ["Det verkade kallt ute", "Hon skulle bada", "Hon ville putsa fönstret"],
+        answer: 0,
+      },
+      {
+        id: "reading-4-vidar-bibliotek",
+        passage: "Vidar viskade när han frågade efter en bok. Runt honom satt andra barn och läste tyst vid små bord.",
+        question: "Var var Vidar troligen?",
+        options: ["På ett bibliotek", "På en fotbollsplan", "I en simhall"],
+        answer: 0,
+      },
+      {
+        id: "reading-4-meja-snigel",
+        passage: "Efter regnet såg Meja små blanka spår på stenen. Vid slutet av ett spår satt en snigel under ett blad.",
+        question: "Vad hade troligen gjort de blanka spåren?",
+        options: ["Snigeln", "En penna", "En cykel"],
+        answer: 0,
+      },
+      {
+        id: "reading-4-aron-karta",
+        passage: "Aron gick först åt fel håll och kom till en återvändsgränd. Han studerade kartan igen, vände om och hittade porten.",
+        question: "Vad hjälpte Aron att hitta porten?",
+        options: ["Att han tittade på kartan igen", "Att han stängde ögonen", "Att han tappade kartan"],
+        answer: 0,
+      },
+      {
+        id: "reading-4-iris-mynt",
+        passage: "Iris lade ett mynt i automaten och tryckte på knappen. Maskinen surrade och en biljett gled ut.",
+        question: "Vad köpte Iris troligen?",
+        options: ["En biljett", "En blomma", "En kudde"],
         answer: 0,
       },
     ];
@@ -2022,10 +2288,19 @@ function makeLogicProblems(level) {
 
 function makePatternProblems(level) {
   if (level === 1) {
-    return [
+    const patternSets = [
       { sequence: ["blå cirkel", "röd triangel", "blå cirkel", "röd triangel"], answer: "blå cirkel", options: ["blå cirkel", "röd triangel", "gul stjärna"] },
       { sequence: ["gul stjärna", "gul stjärna", "grön fyrkant", "gul stjärna", "gul stjärna"], answer: "grön fyrkant", options: ["grön fyrkant", "gul stjärna", "blå cirkel"] },
-    ].map((picked, index) => ({
+      { sequence: ["måne", "sol", "måne", "sol"], answer: "måne", options: ["måne", "sol", "moln"] },
+      { sequence: ["röd", "röd", "blå", "röd", "röd"], answer: "blå", options: ["blå", "röd", "gul"] },
+      { sequence: ["1", "2", "1", "2"], answer: "1", options: ["1", "2", "3"] },
+      { sequence: ["liten", "stor", "liten", "stor"], answer: "liten", options: ["liten", "stor", "mellan"] },
+      { sequence: ["triangel", "triangel", "cirkel", "triangel", "triangel"], answer: "cirkel", options: ["cirkel", "triangel", "fyrkant"] },
+      { sequence: ["A", "B", "A", "B"], answer: "A", options: ["A", "B", "C"] },
+      { sequence: ["hög", "låg", "hög", "låg"], answer: "hög", options: ["hög", "låg", "tyst"] },
+      { sequence: ["äpple", "päron", "äpple", "päron"], answer: "äpple", options: ["äpple", "päron", "banan"] },
+    ];
+    return patternSets.map((picked, index) => ({
       id: `logic-1-pattern-${index}`,
       title: "Mönstermaskinen",
       prompt: "Maskinen har tappat nästa symbol. Vad kommer sedan?",
@@ -2037,10 +2312,19 @@ function makePatternProblems(level) {
   }
 
   if (level === 2) {
-    return [
+    const patternSets = [
       { sequence: ["1", "3", "5", "7"], answer: "9", options: ["8", "9", "10"] },
       { sequence: ["A", "B", "B", "A", "B", "B"], answer: "A", options: ["A", "B", "C"] },
-    ].map((picked, index) => ({
+      { sequence: ["2", "4", "6", "8"], answer: "10", options: ["9", "10", "12"] },
+      { sequence: ["röd", "blå", "grön", "röd", "blå"], answer: "grön", options: ["grön", "röd", "gul"] },
+      { sequence: ["cirkel", "fyrkant", "fyrkant", "cirkel", "fyrkant"], answer: "fyrkant", options: ["cirkel", "fyrkant", "triangel"] },
+      { sequence: ["10", "9", "8", "7"], answer: "6", options: ["5", "6", "8"] },
+      { sequence: ["A", "C", "E", "G"], answer: "I", options: ["H", "I", "J"] },
+      { sequence: ["sol", "sol", "måne", "sol", "sol"], answer: "måne", options: ["måne", "sol", "stjärna"] },
+      { sequence: ["3", "6", "9", "12"], answer: "15", options: ["14", "15", "18"] },
+      { sequence: ["liten", "mellan", "stor", "liten", "mellan"], answer: "stor", options: ["stor", "liten", "hög"] },
+    ];
+    return patternSets.map((picked, index) => ({
       id: `logic-2-pattern-${index}`,
       title: "Mönstermaskinen",
       prompt: "Hitta regeln och välj nästa ruta.",
@@ -2051,10 +2335,26 @@ function makePatternProblems(level) {
     }));
   }
 
-  return [
+  const patternSets = level === 3 ? [
     { sequence: ["röd cirkel", "blå triangel", "gul fyrkant", "röd cirkel", "blå triangel"], answer: "gul fyrkant", options: ["gul fyrkant", "röd triangel", "blå cirkel"] },
     { sequence: ["2", "4", "8", "16"], answer: "32", options: ["20", "24", "32"] },
-  ].map((picked, index) => ({
+    { sequence: ["1", "4", "7", "10"], answer: "13", options: ["12", "13", "14"] },
+    { sequence: ["A", "B", "D", "E", "G"], answer: "H", options: ["H", "I", "J"] },
+    { sequence: ["grön liten", "grön stor", "blå liten", "blå stor", "grön liten"], answer: "grön stor", options: ["grön stor", "blå liten", "röd stor"] },
+    { sequence: ["5", "10", "20", "40"], answer: "80", options: ["60", "80", "100"] },
+    { sequence: ["sol", "måne", "stjärna", "sol", "måne"], answer: "stjärna", options: ["stjärna", "sol", "moln"] },
+    { sequence: ["triangel", "cirkel", "cirkel", "fyrkant", "triangel", "cirkel", "cirkel"], answer: "fyrkant", options: ["fyrkant", "triangel", "cirkel"] },
+  ] : [
+    { sequence: ["3", "6", "12", "24"], answer: "48", options: ["36", "42", "48"] },
+    { sequence: ["1", "1", "2", "3", "5"], answer: "8", options: ["6", "8", "10"] },
+    { sequence: ["A1", "B2", "C3", "D4"], answer: "E5", options: ["E5", "E4", "F5"] },
+    { sequence: ["röd liten", "röd stor", "blå liten", "blå stor", "gul liten"], answer: "gul stor", options: ["gul stor", "röd liten", "blå liten"] },
+    { sequence: ["20", "17", "14", "11"], answer: "8", options: ["7", "8", "9"] },
+    { sequence: ["2", "3", "5", "8", "12"], answer: "17", options: ["16", "17", "20"] },
+    { sequence: ["cirkel 1", "triangel 2", "fyrkant 3", "cirkel 4"], answer: "triangel 5", options: ["triangel 5", "fyrkant 5", "cirkel 5"] },
+    { sequence: ["kall", "varm", "varmare", "kall", "varm"], answer: "varmare", options: ["varmare", "kallare", "ljusare"] },
+  ];
+  return patternSets.map((picked, index) => ({
     id: `logic-${level}-pattern-${index}`,
     title: "Mönstermaskinen",
     prompt: "Regeln är lite lurigare nu. Vilken ruta fortsätter mönstret?",
@@ -2067,80 +2367,123 @@ function makePatternProblems(level) {
 
 function makeSortingProblems(level) {
   if (level === 1) {
-    const numbers = [2, 4, 7, 6, 9];
-    return [{
-      id: "logic-1-sort-number",
+    const sortSets = [
+      { id: "number", prompt: "Maskinen sorterar från minst till störst. Vilket tal ligger fel?", items: ["2", "4", "7", "6", "9"], answer: "6", options: ["4", "6", "9"] },
+      { id: "color", prompt: "Färgerna ska växla röd, blå. Vilken ruta ligger fel?", items: ["röd", "blå", "röd", "röd", "blå"], answer: "andra röd", options: ["första röd", "andra röd", "blå"] },
+      { id: "size", prompt: "Orden ska gå liten, mellan, stor. Vilket ord ligger fel?", items: ["liten", "mellan", "stor", "mellan"], answer: "mellan", options: ["liten", "stor", "mellan"] },
+      { id: "days", prompt: "Dagarna ska komma i rätt ordning. Vilken dag ligger fel?", items: ["måndag", "tisdag", "torsdag", "onsdag"], answer: "torsdag", options: ["tisdag", "torsdag", "onsdag"] },
+    ];
+    return sortSets.map((picked) => ({
+      id: `logic-1-sort-${picked.id}`,
       title: "Sorteringsröret",
-      prompt: "Maskinen sorterar från minst till störst. Vilket tal ligger fel?",
+      prompt: picked.prompt,
       kind: "sort",
-      items: numbers.map(String),
-      answer: "6",
-      options: ["4", "6", "9"],
-    }];
+      items: picked.items,
+      answer: picked.answer,
+      options: picked.options,
+    }));
   }
 
   if (level === 2) {
-    const words = ["apa", "bil", "dator", "citron", "eka"];
-    return [{
-      id: "logic-2-sort-words",
+    const sortSets = [
+      { id: "words", prompt: "Orden ska ligga i alfabetisk ordning. Vilket ord ligger fel?", items: ["apa", "bil", "dator", "citron", "eka"], answer: "citron", options: ["bil", "dator", "citron"] },
+      { id: "tens", prompt: "Talen ska öka med tio. Vilket tal stör ordningen?", items: ["10", "20", "30", "50", "40"], answer: "50", options: ["30", "50", "40"] },
+      { id: "length", prompt: "Orden ska bli längre och längre. Vilket ord ligger fel?", items: ["ko", "sol", "stol", "bok", "karta"], answer: "bok", options: ["sol", "bok", "karta"] },
+      { id: "months", prompt: "Månaderna ska komma i ordning. Vilken månad ligger fel?", items: ["mars", "april", "juni", "maj"], answer: "juni", options: ["april", "juni", "maj"] },
+    ];
+    return sortSets.map((picked) => ({
+      id: `logic-2-sort-${picked.id}`,
       title: "Sorteringsröret",
-      prompt: "Orden ska ligga i alfabetisk ordning. Vilket ord ligger fel?",
+      prompt: picked.prompt,
       kind: "sort",
-      items: words,
-      answer: "citron",
-      options: ["bil", "dator", "citron"],
-    }];
+      items: picked.items,
+      answer: picked.answer,
+      options: picked.options,
+    }));
   }
 
-  const items = level === 3 ? ["3", "6", "12", "9", "15"] : ["röd liten", "röd stor", "blå liten", "blå stor", "grön liten"];
-  return [{
-    id: level === 3 ? "logic-3-sort-step" : "logic-4-sort-shape",
+  const sortSets = level === 3 ? [
+    { id: "step", prompt: "Talen ska öka med 3 varje steg. Vilket tal stör regeln?", items: ["3", "6", "12", "9", "15"], answer: "12", options: ["6", "12", "9"] },
+    { id: "double", prompt: "Talen ska dubbleras. Vilket tal ligger fel?", items: ["2", "4", "8", "12", "16"], answer: "12", options: ["8", "12", "16"] },
+    { id: "alphabet", prompt: "Bokstäverna hoppar över en bokstav varje gång. Vilken ligger fel?", items: ["A", "C", "E", "H", "I"], answer: "H", options: ["E", "H", "I"] },
+    { id: "shape-color", prompt: "Formerna ska först sorteras efter färg, sedan form. Vilken bryter ordningen?", items: ["blå cirkel", "blå fyrkant", "grön cirkel", "röd cirkel", "grön fyrkant"], answer: "röd cirkel", options: ["grön cirkel", "röd cirkel", "grön fyrkant"] },
+  ] : [
+    { id: "shape", prompt: "Maskinen sorterar först färg, sedan storlek. Vilken ruta bryter ordningen?", items: ["röd liten", "röd stor", "blå liten", "blå stor", "grön liten"], answer: "grön liten", options: ["röd stor", "blå stor", "grön liten"] },
+    { id: "minus-four", prompt: "Talen ska minska med 4. Vilket tal ligger fel?", items: ["28", "24", "20", "18", "12"], answer: "18", options: ["20", "18", "12"] },
+    { id: "vowels", prompt: "Orden ska sorteras efter antal vokaler. Vilket ord stör regeln?", items: ["bil", "kaka", "banan", "sol", "melodi"], answer: "sol", options: ["kaka", "sol", "melodi"] },
+    { id: "mixed-code", prompt: "Koderna ska öka med en bokstav och ett tal. Vilken kod ligger fel?", items: ["A1", "B2", "C3", "E4", "D5"], answer: "E4", options: ["C3", "E4", "D5"] },
+  ];
+  return sortSets.map((picked) => ({
+    id: `logic-${level}-sort-${picked.id}`,
     title: "Sorteringsröret",
-    prompt: level === 3 ? "Talen ska öka med 3 varje steg. Vilket tal stör regeln?" : "Maskinen sorterar först färg, sedan storlek. Vilken ruta bryter ordningen?",
+    prompt: picked.prompt,
     kind: "sort",
-    items,
-    answer: level === 3 ? "12" : "grön liten",
-    options: level === 3 ? ["6", "12", "9"] : ["röd stor", "blå stor", "grön liten"],
-  }];
+    items: picked.items,
+    answer: picked.answer,
+    options: picked.options,
+  }));
 }
 
 function makeRuleProblems(level) {
   if (level === 1) {
-    return [{
-      id: "logic-1-rule-even",
+    const ruleSets = [
+      { id: "even", prompt: "Maskinen gillar 2, 4 och 8. Den gillar inte 3, 5 och 7. Vilken regel använder den?", accepted: ["2", "4", "8"], rejected: ["3", "5", "7"], answer: "Jämna tal", options: ["Jämna tal", "Tal större än 5", "Tal med två siffror"] },
+      { id: "red", prompt: "Maskinen gillar röd boll, röd bil och röd hatt. Den gillar inte blå boll eller gul hatt.", accepted: ["röd boll", "röd bil", "röd hatt"], rejected: ["blå boll", "gul hatt"], answer: "Röda saker", options: ["Röda saker", "Runda saker", "Saker med hjul"] },
+      { id: "animals", prompt: "Maskinen gillar katt, hund och häst. Den gillar inte stol, sten och sko.", accepted: ["katt", "hund", "häst"], rejected: ["stol", "sten", "sko"], answer: "Djur", options: ["Djur", "Möbler", "Saker av sten"] },
+      { id: "small", prompt: "Maskinen gillar liten boll och liten bok. Den gillar inte stor boll eller stor bok.", accepted: ["liten boll", "liten bok"], rejected: ["stor boll", "stor bok"], answer: "Små saker", options: ["Små saker", "Alla böcker", "Alla bollar"] },
+    ];
+    return ruleSets.map((picked) => ({
+      id: `logic-1-rule-${picked.id}`,
       title: "Regeldetektiven",
-      prompt: "Maskinen gillar 2, 4 och 8. Den gillar inte 3, 5 och 7. Vilken regel använder den?",
+      prompt: picked.prompt,
       kind: "rule",
-      accepted: ["2", "4", "8"],
-      rejected: ["3", "5", "7"],
-      answer: "Jämna tal",
-      options: ["Jämna tal", "Tal större än 5", "Tal med två siffror"],
-    }];
+      accepted: picked.accepted,
+      rejected: picked.rejected,
+      answer: picked.answer,
+      options: picked.options,
+    }));
   }
 
   if (level === 2) {
-    return [{
-      id: "logic-2-rule-three-letters",
+    const ruleSets = [
+      { id: "three-letters", prompt: "Maskinen gillar orden sol, ros och vas. Den gillar inte sten, blomma och karta.", accepted: ["sol", "ros", "vas"], rejected: ["sten", "blomma", "karta"], answer: "Tre bokstäver", options: ["Tre bokstäver", "Börjar på s", "Saker i rymden"] },
+      { id: "ends-a", prompt: "Maskinen gillar apa, kaka och stjärna. Den gillar inte sol, hus och träd.", accepted: ["apa", "kaka", "stjärna"], rejected: ["sol", "hus", "träd"], answer: "Slutar på a", options: ["Slutar på a", "Börjar på s", "Är djur"] },
+      { id: "greater-five", prompt: "Maskinen gillar 6, 9 och 12. Den gillar inte 1, 3 och 5.", accepted: ["6", "9", "12"], rejected: ["1", "3", "5"], answer: "Större än 5", options: ["Större än 5", "Mindre än 5", "Jämna tal"] },
+      { id: "round", prompt: "Maskinen gillar boll, hjul och apelsin. Den gillar inte bok, dörr och penna.", accepted: ["boll", "hjul", "apelsin"], rejected: ["bok", "dörr", "penna"], answer: "Runda saker", options: ["Runda saker", "Saker att läsa", "Saker av trä"] },
+    ];
+    return ruleSets.map((picked) => ({
+      id: `logic-2-rule-${picked.id}`,
       title: "Regeldetektiven",
-      prompt: "Maskinen gillar orden sol, ros och vas. Den gillar inte sten, blomma och karta.",
+      prompt: picked.prompt,
       kind: "rule",
-      accepted: ["sol", "ros", "vas"],
-      rejected: ["sten", "blomma", "karta"],
-      answer: "Tre bokstäver",
-      options: ["Tre bokstäver", "Börjar på s", "Saker i rymden"],
-    }];
+      accepted: picked.accepted,
+      rejected: picked.rejected,
+      answer: picked.answer,
+      options: picked.options,
+    }));
   }
 
-  return [{
-    id: level === 3 ? "logic-3-rule-blue" : "logic-4-rule-small-red-corners",
+  const ruleSets = level === 3 ? [
+    { id: "blue", prompt: "Maskinen gillar blå cirklar och blå fyrkanter, men inte röda cirklar.", accepted: ["blå cirkel", "blå fyrkant"], rejected: ["röd cirkel", "gul fyrkant"], answer: "Blå former", options: ["Blå former", "Bara cirklar", "Gula former"] },
+    { id: "multiples-four", prompt: "Maskinen gillar 4, 8 och 16. Den gillar inte 6, 10 och 14.", accepted: ["4", "8", "16"], rejected: ["6", "10", "14"], answer: "Delbart med 4", options: ["Delbart med 4", "Udda tal", "Mindre än 10"] },
+    { id: "starts-s", prompt: "Maskinen gillar sol, sten och saga. Den gillar inte måne, blomma och karta.", accepted: ["sol", "sten", "saga"], rejected: ["måne", "blomma", "karta"], answer: "Börjar på s", options: ["Börjar på s", "Slutar på a", "Har fyra bokstäver"] },
+    { id: "two-attributes", prompt: "Maskinen gillar små blå saker. Den gillar inte stora blå saker eller små röda saker.", accepted: ["liten blå boll", "liten blå bok"], rejected: ["stor blå boll", "liten röd bok"], answer: "Små blå saker", options: ["Små blå saker", "Alla blå saker", "Alla små saker"] },
+  ] : [
+    { id: "small-red-corners", prompt: "Maskinen gillar små röda former med hörn, men inte stora röda former eller små blå former.", accepted: ["liten röd triangel", "liten röd fyrkant"], rejected: ["stor röd triangel", "liten blå fyrkant"], answer: "Små röda former med hörn", options: ["Små röda former med hörn", "Alla röda former", "Alla små former"] },
+    { id: "prime-small", prompt: "Maskinen gillar 2, 3, 5 och 7. Den gillar inte 1, 4, 6 och 8.", accepted: ["2", "3", "5", "7"], rejected: ["1", "4", "6", "8"], answer: "Primtal under 10", options: ["Primtal under 10", "Jämna tal", "Tal större än 5"] },
+    { id: "double-letter", prompt: "Maskinen gillar orden glass, boll och kaffe. Den gillar inte sol, karta och bok.", accepted: ["glass", "boll", "kaffe"], rejected: ["sol", "karta", "bok"], answer: "Har dubbel bokstav", options: ["Har dubbel bokstav", "Slutar på a", "Är mat"] },
+    { id: "not-red-round", prompt: "Maskinen gillar blå cirklar och gröna cirklar. Den gillar inte röda cirklar eller blå fyrkanter.", accepted: ["blå cirkel", "grön cirkel"], rejected: ["röd cirkel", "blå fyrkant"], answer: "Cirklar som inte är röda", options: ["Cirklar som inte är röda", "Alla blå former", "Alla cirklar"] },
+  ];
+  return ruleSets.map((picked) => ({
+    id: `logic-${level}-rule-${picked.id}`,
     title: "Regeldetektiven",
-    prompt: level === 3 ? "Maskinen gillar blå cirklar och blå fyrkanter, men inte röda cirklar." : "Maskinen gillar små röda former med hörn, men inte stora röda former eller små blå former.",
+    prompt: picked.prompt,
     kind: "rule",
-    accepted: level === 3 ? ["blå cirkel", "blå fyrkant"] : ["liten röd triangel", "liten röd fyrkant"],
-    rejected: level === 3 ? ["röd cirkel", "gul fyrkant"] : ["stor röd triangel", "liten blå fyrkant"],
-    answer: level === 3 ? "Blå former" : "Små röda former med hörn",
-    options: level === 3 ? ["Blå former", "Bara cirklar", "Gula former"] : ["Små röda former med hörn", "Alla röda former", "Alla små former"],
-  }];
+    accepted: picked.accepted,
+    rejected: picked.rejected,
+    answer: picked.answer,
+    options: picked.options,
+  }));
 }
 
 function renderLogicProblem(problem) {

@@ -282,6 +282,78 @@ var readingQuestions = [
     options: ["För att de har mjuka tassar", "För att de har flexibel ryggrad och bra balans", "För att de är lätta"],
     answer: 1,
   },
+  {
+    passage: "Fjärilar börjar sitt liv som larver. Larven äter mycket och bildar sedan en puppa. Inuti puppan förändras kroppen och efter en tid kommer en vuxen fjäril ut med vingar.",
+    question: "Vad händer inuti puppan?",
+    options: ["Larven blir en fjäril", "Larven bygger ett bo", "Larven blir en sten"],
+    answer: 0,
+  },
+  {
+    passage: "En kompass är ett verktyg som hjälper människor att hitta riktningar. Nålen i kompassen pekar mot norr. Därför kan vandrare använda en kompass tillsammans med en karta.",
+    question: "Vilken riktning pekar kompassnålen mot?",
+    options: ["Norr", "Söder", "Väster"],
+    answer: 0,
+  },
+  {
+    passage: "Havet täcker mer än hälften av jordens yta. I havet finns fiskar, valar, koraller och många andra levande organismer. Havet hjälper också till att påverka väder och klimat.",
+    question: "Vad täcker mer än hälften av jordens yta?",
+    options: ["Havet", "Öknar", "Städer"],
+    answer: 0,
+  },
+  {
+    passage: "En vulkan kan få utbrott när het magma pressas upp från jordens inre. När magman kommer ut på ytan kallas den lava. Lava kan vara mycket varm och flyta nerför vulkanens sidor.",
+    question: "Vad kallas magma när den kommer ut på ytan?",
+    options: ["Lava", "Is", "Sand"],
+    answer: 0,
+  },
+  {
+    passage: "Böcker på ett bibliotek är ofta ordnade efter ämne eller författare. Det gör det lättare att hitta rätt bok. Bibliotekarier hjälper besökare att söka efter information och berättelser.",
+    question: "Varför ordnas böcker på bibliotek?",
+    options: ["För att de ska bli lättare att hitta", "För att de ska väga mindre", "För att de ska torka"],
+    answer: 0,
+  },
+  {
+    passage: "Vind uppstår när luft rör sig från ett område till ett annat. Luften kan röra sig snabbare när skillnaden i temperatur eller lufttryck är stor. Vind kan få träd att vaja och segelbåtar att färdas framåt.",
+    question: "Vad är vind?",
+    options: ["Luft som rör sig", "Stenar som faller", "Vatten som fryser"],
+    answer: 0,
+  },
+  {
+    passage: "En magnet kan dra till sig föremål av järn. Magneter har två poler som kallas nordpol och sydpol. Om två lika poler förs nära varandra stöter de bort varandra.",
+    question: "Vad kan en magnet dra till sig?",
+    options: ["Föremål av järn", "Träskedar", "Pappersmoln"],
+    answer: 0,
+  },
+  {
+    passage: "Grodan lever både i vatten och på land. Den börjar livet som ett yngel med svans i vattnet. När grodan växer får den ben och kan hoppa på land.",
+    question: "Vad börjar grodan sitt liv som?",
+    options: ["Ett yngel", "En fågel", "En blomma"],
+    answer: 0,
+  },
+  {
+    passage: "Fotosyntes är när växter använder solljus, vatten och koldioxid för att skapa socker. Samtidigt släpper växterna ut syre. Det är en viktig process för livet på jorden.",
+    question: "Vad släpper växter ut under fotosyntesen?",
+    options: ["Syre", "Metall", "Salt"],
+    answer: 0,
+  },
+  {
+    passage: "En återvinningsstation har olika behållare för glas, papper, plast och metall. När material återvinns kan det användas igen istället för att allt blir sopor.",
+    question: "Varför återvinner man material?",
+    options: ["För att använda det igen", "För att göra det osynligt", "För att blanda det med mat"],
+    answer: 0,
+  },
+  {
+    passage: "Satelliter kan kretsa runt jorden och samla information. Vissa satelliter används för väderprognoser, andra för kartor eller kommunikation. De hjälper människor att förstå jorden bättre.",
+    question: "Vad kan satelliter användas till?",
+    options: ["Väderprognoser och kartor", "Att plantera träd", "Att baka bröd"],
+    answer: 0,
+  },
+  {
+    passage: "En orkester består av musiker som spelar olika instrument tillsammans. Stråkinstrument, blåsinstrument och slagverk kan alla ingå. Dirigenten hjälper musikerna att hålla takt och börja samtidigt.",
+    question: "Vad gör dirigenten?",
+    options: ["Hjälper musikerna att hålla takt", "Bygger instrumenten", "Säljer biljetter"],
+    answer: 0,
+  },
 ];
 
 var characterState = { ...DEFAULT_CHARACTER_STATE };
